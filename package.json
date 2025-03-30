@@ -1,0 +1,42 @@
+{
+  "name": "rest-client-app",
+  "homepage": "https://spirit-l.github.io/rest-client-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "export": "next export",
+    "deploy": "npm run build && npm run export && gh-pages -d out",
+    "start": "next start",
+    "lint": "next lint . --ext .js,.jsx,.ts,.tsx",
+    "format:fix": "prettier --write .",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@next/eslint-plugin-next": "^15.2.4",
+    "@reduxjs/toolkit": "^2.6.1",
+    "next": "^15.2.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-redux": "^9.2.0",
+    "sass": "^1.86.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20.17.28",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.28.0",
+    "@typescript-eslint/parser": "^8.28.0",
+    "eslint": "^9.23.0",
+    "eslint-config-next": "^15.2.4",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-next": "^0.0.0",
+    "eslint-plugin-prettier": "^5.2.5",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "gh-pages": "^6.3.0",
+    "husky": "^9.1.7",
+    "typescript": "^5"
+  }
+}
