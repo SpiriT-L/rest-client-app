@@ -12,10 +12,10 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends(
-    'next/core-web-vitals',
-    'next/typescript',
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
+    'plugin:prettier/recommended',
+    'next/core-web-vitals',
+    'next/typescript'
   ),
   {
     plugins: {
@@ -26,9 +26,9 @@ const eslintConfig = [
       'prettier/prettier': ['error'],
       '@typescript-eslint/no-unused-vars': [
         'error',
-        { argsIgnorePattern: '^_' },
+        { varsIgnorePattern: 'React', argsIgnorePattern: '^_' },
       ],
-      'react/react-in-jsx-scope': 'off',
+      // 'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
       '@typescript-eslint/explicit-function-return-type': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
@@ -36,7 +36,10 @@ const eslintConfig = [
       'no-console': ['warn', { allow: ['warn', 'error'] }],
       '@next/next/no-html-link-for-pages': ['error', './src/app/'],
       '@next/next/no-img-element': 'error',
-      'react/react-in-jsx-scope': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { varsIgnorePattern: 'React' },
+      ],
 
       quotes: ['error', 'single'],
       semi: ['error', 'always'],
