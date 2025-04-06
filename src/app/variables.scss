@@ -1,19 +1,18 @@
 // VARS
 
 // colors
-$primary-color: #000;
-$secondary-color: #fff;
+$color-primary: #9f9f9f;
+$color-secondary: #8b8b8b;
+$color-background-primary: rgb(24, 23, 32);
+$color-background-secondary: rgba(39, 34, 78, 0.7);
+$color-border-bottom: #dee2e6;
+$color-link: #9f9f9f;
+$color-link-hover: #8b8b8b;
+$color-link-active: #d29b43;
 
-// typography
+//============================= typography ============================//
 $heading-font: 'Poppins', sans-serif;
 $body-font: 'Inter', sans-serif;
-@mixin body-font($font-size) {
-  font-size: $font-size;
-  color: $primary-color;
-  font-family: $body-font;
-  line-height: 1.5;
-  font-weight: 400;
-}
 
 //================================================================//
 .container {
@@ -21,4 +20,13 @@ $body-font: 'Inter', sans-serif;
   flex-direction: column;
   justify-content: center;
   padding: 1rem;
+}
+
+//======================= @mixin =========================================//
+@mixin body-font($font-size) {
+  font-size: $font-size;
+  color: $color-primary;
+  font-family: $body-font;
+  line-height: 1.5;
+  font-weight: 400;
 }

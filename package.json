@@ -18,6 +18,7 @@
   "dependencies": {
     "@next/eslint-plugin-next": "^15.2.4",
     "@reduxjs/toolkit": "^2.6.1",
+    "i18next": "^24.2.3",
     "next": "^15.2.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
