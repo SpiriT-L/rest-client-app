@@ -1,6 +1,7 @@
 import { JSX } from 'react';
 import './globals.scss';
 import Header from '@/components/Header/Header';
+import { Navigation } from '@/components/Navigation/Navigation';
 
 export const metadata = {
   title: 'Rest Client App',
@@ -19,6 +20,7 @@ export default function RootLayout({
       <body>
         <Header />
         <main>{children}</main>
+        <Navigation />
         <footer>
           <div>Footer</div>
         </footer>
