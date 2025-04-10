@@ -1,13 +1,12 @@
 import { JSX } from 'react';
 import './globals.scss';
 import Header from '@/components/Header/Header';
-import { Navigation } from '@/components/Navigation/Navigation';
 
 export const metadata = {
   title: 'Rest Client App',
   description: 'A modern REST client built with Next.js and TypeScript',
   keywords: ['Next.js', 'TypeScript', 'REST Client', 'React'],
-  authors: [{ name: 'Your Name' }],
+  authors: [{ name: 'RSS-React-team' }],
 };
 
 export default function RootLayout({
@@ -20,7 +19,6 @@ export default function RootLayout({
       <body>
         <Header />
         <main>{children}</main>
-        <Navigation />
         <footer>
           <div>Footer</div>
         </footer>

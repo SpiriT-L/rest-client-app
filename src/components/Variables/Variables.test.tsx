@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import { Variables } from './Variables';
 import * as useVariablesHook from './useVariables';
 import styles from './Variables.module.scss';
+import Variables from '@/components/Variables/Variables';
 
 vi.mock('@/components/VariableItem/VariableItem', () => ({
   VariableItem: ({

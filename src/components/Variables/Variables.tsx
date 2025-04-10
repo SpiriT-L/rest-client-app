@@ -5,7 +5,7 @@ import React from 'react';
 import { VariableItem } from '@/components/VariableItem/VariableItem';
 import { useVariables } from '@/components/Variables/useVariables';
 
-export const Variables: React.FC = () => {
+const Variables: React.FC = () => {
   const [variables, addVariable, removeVariable, addEmptyVariableItem] =
     useVariables();
 
@@ -27,3 +27,5 @@ export const Variables: React.FC = () => {
     </div>
   );
 };
+
+export default Variables;

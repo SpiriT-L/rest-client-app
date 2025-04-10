@@ -1,26 +1,55 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import { authCheck } from '@/hocs/authCheck';
-import { Variables } from '@/components/Variables/Variables';
-import AuthenticatedVariables from './page';
+import VariablesPage from './page';
+
+vi.mock('react', async () => {
+  const actualReact = await vi.importActual('react');
+  return {
+    ...actualReact,
+    lazy: vi.fn((): (() => React.JSX.Element) => {
+      const Component = (): React.JSX.Element => (
+        <div>Mocked Variables Component</div>
+      );
+      Component.displayName = 'LazyMockComponent';
+      return Component;
+    }),
+  };
+});
 
 vi.mock('@/hocs/authCheck', () => ({
-  authCheck: vi.fn(Component => Component),
+  authCheck: vi.fn((Component): (() => React.JSX.Element) => {
+    const WrappedComponent = (): React.JSX.Element => (
+      <div data-testid="authenticated">{<Component />}</div>
+    );
+    WrappedComponent.displayName = `authCheck(${Component.displayName || Component.name || 'Component'})`;
+    return WrappedComponent;
+  }),
 }));
 
-vi.mock('@/components/Variables/Variables', () => ({
-  Variables: (): React.JSX.Element => <div>Mocked Variables Component</div>,
-}));
+describe('VariablesPage Component', () => {
+  it('renders the Variables component wrapped in authCheck after loading', async () => {
+    render(<VariablesPage />);
 
-describe('AuthenticatedVariables Component', () => {
-  it('applies authCheck HOC to the Variables component', () => {
-    render(<AuthenticatedVariables />);
+    await waitFor(() => {
+      expect(
+        screen.getByText('Mocked Variables Component')
+      ).toBeInTheDocument();
+    });
 
-    expect(screen.getByText('Mocked Variables Component')).toBeInTheDocument();
+    expect(screen.getByTestId('authenticated')).toBeInTheDocument();
+  });
 
-    expect(authCheck).toHaveBeenCalledWith(Variables);
-    expect(authCheck).toHaveBeenCalledTimes(1);
+  it('does not show the fallback after the component is loaded', async () => {
+    render(<VariablesPage />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('Mocked Variables Component')
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
   });
 });
