@@ -1,0 +1,60 @@
+@import '@/styles/variables';
+
+.variable {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+
+  .content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      background-color: $color-background-secondary;
+      transition: all 0.3s ease;
+      color: $color-primary;
+
+      &:focus-within {
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      }
+
+      &.readonly {
+        background-color: $color-background-primary;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+
+    .action {
+      cursor: pointer;
+      opacity: 0.5;
+
+      &:hover {
+        opacity: 1;
+      }
+
+      &.disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+      }
+
+      &.invisible {
+        visibility: hidden;
+      }
+    }
+  }
+}

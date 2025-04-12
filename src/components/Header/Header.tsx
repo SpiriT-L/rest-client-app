@@ -4,9 +4,12 @@ import styles from './Header.module.scss';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { useIsSignedIn } from '@/hooks/useIsSignedIn';
+import { Navigation } from '@/components/Navigation/Navigation';
 
 const Header: React.FC = () => {
   const [isShrunk, setIsShrunk] = useState(false);
+  const isSignedIn = useIsSignedIn();
 
   useEffect(() => {
     const handleScroll = (): void => {
@@ -32,6 +35,7 @@ const Header: React.FC = () => {
               <Image src="/logo.svg" alt="Logo" width={100} height={50} />
             </Link>
           </div>
+          {isSignedIn && <Navigation />}
           <nav className={styles.nav}>
             <ul className={styles.navItems}>
               <li>

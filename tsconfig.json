@@ -27,6 +27,15 @@
       "@/styles/*": ["src/app/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "node_modules/vitest/globals.d.ts",
+    "node_modules/vitest/globals.d.ts",
+    "node_modules/@types/node/globals.d.ts",
+    "node_modules/@types/node/module.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

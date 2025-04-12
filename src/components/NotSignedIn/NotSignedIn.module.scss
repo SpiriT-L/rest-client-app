@@ -1,0 +1,11 @@
+@import '@/styles/variables';
+
+.notSignedIn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+}
