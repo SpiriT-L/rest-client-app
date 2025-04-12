@@ -1,11 +1,13 @@
 'use client';
 
 import styles from './Navigation.module.scss';
-import Link from 'next/link';
 import React from 'react';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 
 export const Navigation: React.FC = () => {
+  const t = useTranslations('Navigation');
   const path = usePathname();
   const isActive = (href: string): boolean => href === path;
   return (
@@ -14,16 +16,16 @@ export const Navigation: React.FC = () => {
         className={isActive('/rest-client') ? 'active' : ''}
         href={'rest-client'}
       >
-        Rest-client
+        {t('rest_client')}
       </Link>
       <Link className={isActive('/history') ? 'active' : ''} href={'history'}>
-        History
+        {t('history')}
       </Link>
       <Link
         className={isActive('/variables') ? 'active' : ''}
         href={'variables'}
       >
-        Variables
+        {t('variables')}
       </Link>
     </nav>
   );

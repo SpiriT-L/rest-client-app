@@ -7,6 +7,7 @@ import { useIsSignedIn } from '@/hooks/useIsSignedIn';
 import { Navigation } from '@/components/Navigation/Navigation';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 
 const Header: React.FC = () => {
   const t = useTranslations('Header');
@@ -37,6 +38,7 @@ const Header: React.FC = () => {
               <Image src="/logo.svg" alt="Logo" width={100} height={50} />
             </Link>
           </div>
+
           {isSignedIn && <Navigation />}
           <nav className={styles.nav}>
             <ul className={styles.navItems}>
@@ -53,6 +55,7 @@ const Header: React.FC = () => {
             </ul>
           </nav>
         </div>
+        <LanguageSwitcher />
       </header>
     </>
   );

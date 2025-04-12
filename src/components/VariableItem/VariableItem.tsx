@@ -39,7 +39,7 @@ export const VariableItem: React.FC<VariableItemProps> = ({
           onChange={event => setNewValues('value', event.target.value)}
           className={`${styles.input} ${!isEditing ? styles.readonly : ''}`}
           type="text"
-          placeholder={isEditing ? 'Variable value' : ''}
+          placeholder={isEditing ? 'variable_value' : ''}
           defaultValue={newValue}
         />
       </div>

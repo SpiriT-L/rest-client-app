@@ -4,16 +4,18 @@ import styles from './Variables.module.scss';
 import React from 'react';
 import { VariableItem } from '@/components/VariableItem/VariableItem';
 import { useVariables } from '@/components/Variables/useVariables';
+import { useTranslations } from 'next-intl';
 
 const Variables: React.FC = () => {
+  const t = useTranslations();
   const [variables, addVariable, removeVariable, addEmptyVariableItem] =
     useVariables();
 
   return (
     <div className={styles.variables}>
-      <h1>Variables</h1>
+      <h1>{t('variables')}</h1>
       {!variables && <p>No variables added yet</p>}
-      <button onClick={addEmptyVariableItem}>Add new variable</button>
+      <button onClick={addEmptyVariableItem}>{t('button_title')}</button>
       {variables &&
         variables.map((item, index) => (
           <VariableItem

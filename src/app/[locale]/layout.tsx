@@ -24,10 +24,12 @@ export default async function LocaleLayout({
     notFound();
   }
 
+  const messages = await import(`../../../messages/${locale}.json`);
+
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider>
+        <NextIntlClientProvider locale={locale} messages={messages.default}>
           <Header />
           <main>{children}</main>
         </NextIntlClientProvider>

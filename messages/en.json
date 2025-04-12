@@ -6,5 +6,21 @@
   "Header": {
     "sign_in": "Sign In",
     "sing_up": "Sing up"
+  },
+  "Navigation": {
+    "rest_client": "Rest Client",
+    "history": "History",
+    "variables": "Variables"
+  },
+  "NotSignedIn": {
+    "not_signed_in": "You are not signed in",
+    "come_back": "Please do it and come back"
+  },
+  "VariableItem": {
+    "variable_value": "Variable value"
+  },
+  "Variables": {
+    "variables": "Переменная",
+    "button_title": "Добавить новую переменную"
   }
 }
