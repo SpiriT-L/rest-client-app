@@ -1,0 +1,10 @@
+{
+  "HomePage": {
+    "title": "Hello world!",
+    "about": "Go to the about page"
+  },
+  "Header": {
+    "sign_in": "Sign In",
+    "sing_up": "Sing up"
+  }
+}

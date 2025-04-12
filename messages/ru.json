@@ -1,0 +1,10 @@
+{
+  "HomePage": {
+    "title": "Привет мир",
+    "about": "Go to the about page"
+  },
+  "Header": {
+    "sign_in": "Войти",
+    "sing_up": "Зарегистрироваться"
+  }
+}
