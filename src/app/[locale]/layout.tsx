@@ -4,6 +4,7 @@ import { routing } from '@/i18n/routing';
 import Header from '@/components/Header/Header';
 import '@/styles/globals.scss';
 import { JSX } from 'react';
+import Footer from '@/components/Footer/Footer';
 
 export const metadata = {
   title: 'Rest Client App',
@@ -32,6 +33,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider locale={locale} messages={messages.default}>
           <Header />
           <main>{children}</main>
+          <Footer />
         </NextIntlClientProvider>
       </body>
     </html>

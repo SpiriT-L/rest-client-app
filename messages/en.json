@@ -7,6 +7,11 @@
     "sign_in": "Sign In",
     "sing_up": "Sing up"
   },
+  "Footer": {
+    "nastya": "Anastasiya Mianko",
+    "dima": "Dzmitry Yarash",
+    "leonid": "Leanid Matskevich"
+  },
   "Navigation": {
     "rest_client": "Rest Client",
     "history": "History",
@@ -17,10 +22,13 @@
     "come_back": "Please do it and come back"
   },
   "VariableItem": {
+    "variable_key": "Variable name",
     "variable_value": "Variable value"
   },
   "Variables": {
-    "variables": "Переменная",
-    "button_title": "Добавить новую переменную"
+    "variables": "Variables",
+    "button_title": "Add new variable",
+    "variable_key": "Variable name",
+    "variable_value": "Variable value"
   }
 }

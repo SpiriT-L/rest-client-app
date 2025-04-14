@@ -3,6 +3,7 @@ import { useVariableItem } from '@/components/VariableItem/useVariableItem';
 import styles from './VariableItem.module.scss';
 import React from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 
 type VariableItemProps = {
   name: string;
@@ -25,6 +26,7 @@ export const VariableItem: React.FC<VariableItemProps> = ({
     saveVariable,
     getApplyActionStyles,
   ] = useVariableItem(name, value, addItemAction);
+  const t = useTranslations('Variables');
   return (
     <div className={styles.variable}>
       <div className={styles.content}>
@@ -32,14 +34,14 @@ export const VariableItem: React.FC<VariableItemProps> = ({
           onChange={event => setNewValues('key', event.target.value)}
           className={`${styles.input} ${!isEditing ? styles.readonly : ''}`}
           type="text"
-          placeholder={isEditing ? 'Variable name' : ''}
+          placeholder={isEditing ? t('variable_key') : ''}
           defaultValue={isEditing ? '' : key}
         />
         <input
           onChange={event => setNewValues('value', event.target.value)}
           className={`${styles.input} ${!isEditing ? styles.readonly : ''}`}
           type="text"
-          placeholder={isEditing ? 'variable_value' : ''}
+          placeholder={isEditing ? t('variable_value') : ''}
           defaultValue={newValue}
         />
       </div>
@@ -47,7 +49,7 @@ export const VariableItem: React.FC<VariableItemProps> = ({
         <Image
           onClick={saveVariable}
           className={`${styles.action} ${getApplyActionStyles()}`}
-          src="apply.svg"
+          src="/apply.svg"
           alt="save"
           width={24}
           height={24}
