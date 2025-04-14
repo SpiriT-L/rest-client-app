@@ -12,6 +12,11 @@ const LanguageSwitcher = (): JSX.Element => {
   const newLocale = locale === 'en' ? 'ru' : 'en';
 
   const switchLocale = (): void => {
+    if (pathname === `/${locale}` || pathname === `/${locale}/`) {
+      router.push(`/${newLocale}`);
+      return;
+    }
+
     const newPathname = pathname.replace(`/${locale}/`, `/${newLocale}/`);
     router.push(newPathname);
   };
