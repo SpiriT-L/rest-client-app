@@ -1,0 +1,29 @@
+{
+  "HomePage": {
+    "title": "Привет мир",
+    "about": "Go to the about page"
+  },
+  "Header": {
+    "sign_in": "Войти",
+    "sing_up": "Зарегистрироваться"
+  },
+  "language": {
+    "switch": "En"
+  },
+  "Navigation": {
+    "rest_client": "Rest Client",
+    "history": "History",
+    "variables": "Variables"
+  },
+  "NotSignedIn": {
+    "not_signed_in": "Вы не вошли в систему",
+    "come_back": "Пожалуйста, сделайте это и вернитесь"
+  },
+  "VariableItem": {
+    "variable_value": "Переменное значение"
+  },
+  "Variables": {
+    "variables": "Переменная",
+    "button_title": "Добавить новую переменную"
+  }
+}

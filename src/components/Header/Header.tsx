@@ -2,12 +2,15 @@
 
 import styles from './Header.module.scss';
 import Image from 'next/image';
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useIsSignedIn } from '@/hooks/useIsSignedIn';
 import { Navigation } from '@/components/Navigation/Navigation';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 
 const Header: React.FC = () => {
+  const t = useTranslations('Header');
   const [isShrunk, setIsShrunk] = useState(false);
   const isSignedIn = useIsSignedIn();
 
@@ -35,22 +38,24 @@ const Header: React.FC = () => {
               <Image src="/logo.svg" alt="Logo" width={100} height={50} />
             </Link>
           </div>
+
           {isSignedIn && <Navigation />}
           <nav className={styles.nav}>
             <ul className={styles.navItems}>
               <li>
                 <Link href="/" className={styles.navItem}>
-                  Sign In
+                  {t('sign_in')}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className={styles.navItem}>
-                  Sign Up
+                  {t('sing_up')}
                 </Link>
               </li>
             </ul>
           </nav>
         </div>
+        <LanguageSwitcher />
       </header>
     </>
   );
