@@ -1,8 +1,11 @@
+@use '@/styles/variables' as *;
+
 .formContainer {
   max-width: 400px;
   margin: 4rem auto;
   padding: 2rem;
-  background-color: #f8f8f8;
+  background-color: $color-background-primary;
+  border: 1px solid $color-border-bottom;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -13,14 +16,21 @@
   text-align: center;
 }
 
-.input {
-  width: 100%;
-  padding: 10px 14px;
-  margin-bottom: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 16px;
-}
+// .input {
+//   width: 100%;
+//   padding: 10px 14px;
+//   margin-bottom: 1rem;
+//   border: 1px solid #ccc;
+//   border-radius: 8px;
+//   font-size: 16px;
+//   background-color: $color-background-secondary;
+//   color: $color-primary;
+//   transition: border-color 0.2s;
+//   &:focus {
+//     border-color: $color-link-active;
+//     outline: none;
+//   }
+// }
 
 .checkbox {
   display: flex;
@@ -32,7 +42,7 @@
 
 .button {
   width: 100%;
-  background-color: #0070f3;
+  background-color: #0070f3; // Активный цвет кнопки
   color: white;
   padding: 10px 14px;
   font-size: 16px;
@@ -43,6 +53,15 @@
 
   &:hover {
     background-color: #005ad3;
+  }
+}
+
+.disabled {
+  background-color: #ccc; // Серый цвет для неактивной кнопки
+  color: #666; // Цвет текста для неактивной кнопки
+  cursor: not-allowed; // Убираем pointer
+  &:hover {
+    background-color: #ccc; // Отключаем hover-эффект
   }
 }
 

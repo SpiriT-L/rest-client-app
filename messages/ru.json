@@ -25,5 +25,27 @@
   "Variables": {
     "variables": "Переменная",
     "button_title": "Добавить новую переменную"
+  },
+  "Register": {
+    "title": "Регистрация",
+    "placeholders": {
+      "email": "Email",
+      "password": "Пароль",
+      "repeatPassword": "Повторите пароль",
+      "acceptTerms": "Я принимаю условия"
+    },
+    "buttons": {
+      "register": "Зарегистрироваться"
+    },
+    "validation": {
+      "email": "Введите действительный адрес электронной почты",
+      "requiredEmail": "Email обязателен",
+      "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+      "requiredPassword": "Пароль обязателен",
+      "passwordsMustMatch": "Пароли должны совпадать",
+      "requiredRepeatPassword": "Пожалуйста, повторите свой пароль",
+      "acceptTerms": "Вы должны принять условия",
+      "requiredAcceptTerms": "Принятие условий обязательно"
+    }
   }
 }
