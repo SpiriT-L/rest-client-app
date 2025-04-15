@@ -1,0 +1,29 @@
+@use '@/styles/variables' as *;
+
+.button {
+  width: 100%;
+  background-color: $color-button;
+  color: $color-white;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background-color: $color-button-hover;
+    color: $color-white;
+  }
+}
+
+.disabled {
+  background-color: $color-button-disabled;
+  color: $color-button-text;
+  cursor: not-allowed;
+
+  &:hover {
+    background-color: $color-button-disabled;
+    color: $color-button-text;
+  }
+}

@@ -4,6 +4,7 @@ import styles from './RegisterForm.module.scss';
 import { useFormik } from 'formik';
 import { getValidationSchema } from '@/utils/validationSchema';
 import Input from '@/components/Input/Input';
+import Button from '@/components/Button/Button';
 import { useTranslations } from 'next-intl';
 import { JSX } from 'react';
 
@@ -79,15 +80,9 @@ export default function RegisterPage(): JSX.Element {
           <p className={styles.error}>{formik.errors.accepted}</p>
         )}
 
-        <button
-          className={`${styles.button} ${
-            !formik.isValid || formik.isSubmitting ? styles.disabled : ''
-          }`}
-          type="submit"
-          disabled={!formik.isValid || formik.isSubmitting}
-        >
+        <Button type="submit" disabled={!formik.isValid || formik.isSubmitting}>
           {t('buttons.register')}
-        </button>
+        </Button>
       </form>
     </div>
   );

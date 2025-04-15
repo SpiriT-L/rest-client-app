@@ -4,6 +4,7 @@ import styles from './LoginForm.module.scss';
 import { useFormik } from 'formik';
 import { getLoginValidationSchema } from '@/utils/validationSchema';
 import Input from '@/components/Input/Input';
+import Button from '@/components/Button/Button';
 import { useTranslations } from 'next-intl';
 import { JSX } from 'react';
 
@@ -53,15 +54,9 @@ export default function LoginPage(): JSX.Element {
           touched={formik.touched.password}
         />
 
-        <button
-          className={`${styles.button} ${
-            !formik.isValid || formik.isSubmitting ? styles.disabled : ''
-          }`}
-          type="submit"
-          disabled={!formik.isValid || formik.isSubmitting}
-        >
+        <Button type="submit" disabled={!formik.isValid || formik.isSubmitting}>
           {t('buttons.login')}
-        </button>
+        </Button>
       </form>
     </div>
   );
