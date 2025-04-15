@@ -47,5 +47,21 @@
       "acceptTerms": "Вы должны принять условия",
       "requiredAcceptTerms": "Принятие условий обязательно"
     }
+  },
+  "Login": {
+    "title": "Авторизация",
+    "placeholders": {
+      "email": "Email",
+      "password": "Пароль"
+    },
+    "buttons": {
+      "login": "Войти"
+    },
+    "validation": {
+      "email": "Введите действительный адрес электронной почты",
+      "requiredEmail": "Email обязателен",
+      "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+      "requiredPassword": "Пароль обязателен"
+    }
   }
 }

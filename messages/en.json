@@ -20,8 +20,8 @@
     "variable_value": "Variable value"
   },
   "Variables": {
-    "variables": "Переменная",
-    "button_title": "Добавить новую переменную"
+    "variables": "Variables",
+    "button_title": "Add new variable"
   },
   "Register": {
     "title": "Register",
@@ -43,6 +43,22 @@
       "requiredRepeatPassword": "Please repeat your password",
       "acceptTerms": "You must accept the terms",
       "requiredAcceptTerms": "Accepting the terms is required"
+    }
+  },
+  "Login": {
+    "title": "Login",
+    "placeholders": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "buttons": {
+      "login": "Login"
+    },
+    "validation": {
+      "email": "Enter a valid email",
+      "requiredEmail": "Email is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "requiredPassword": "Password is required"
     }
   }
 }

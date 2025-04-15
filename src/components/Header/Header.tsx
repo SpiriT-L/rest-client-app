@@ -43,7 +43,7 @@ const Header: React.FC = () => {
           <nav className={styles.nav}>
             <ul className={styles.navItems}>
               <li>
-                <Link href="/" className={styles.navItem}>
+                <Link href="/login" className={styles.navItem}>
                   {t('sign_in')}
                 </Link>
               </li>

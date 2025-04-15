@@ -15,3 +15,13 @@ export const getValidationSchema = (t: (key: string) => string) =>
       .oneOf([true], t('validation.acceptTerms'))
       .required(t('validation.requiredAcceptTerms')),
   });
+
+export const getLoginValidationSchema = (t: (key: string) => string) =>
+  Yup.object({
+    email: Yup.string()
+      .email(t('validation.email'))
+      .required(t('validation.requiredEmail')),
+    password: Yup.string()
+      .min(6, t('validation.passwordMinLength'))
+      .required(t('validation.requiredPassword')),
+  });
