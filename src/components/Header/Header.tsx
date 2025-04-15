@@ -48,7 +48,7 @@ const Header: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className={styles.navItem}>
+                <Link href="/register" className={styles.navItem}>
                   {t('sing_up')}
                 </Link>
               </li>
