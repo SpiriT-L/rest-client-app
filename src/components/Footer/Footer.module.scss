@@ -1,0 +1,20 @@
+@use '@/styles/variables' as *;
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+
+  .links {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+  }
+
+  .link {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+}

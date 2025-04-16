@@ -5,6 +5,11 @@ import '@testing-library/jest-dom';
 import { VariableItem } from './VariableItem';
 import * as useVariableItemHook from './useVariableItem';
 import styles from './VariableItem.module.scss';
+import { useTranslations } from 'next-intl';
+
+vi.mock('next-intl', () => ({
+  useTranslations: vi.fn(),
+}));
 
 vi.mock('next/image', () => ({
   default: ({
@@ -27,6 +32,13 @@ vi.mock('next/image', () => ({
 }));
 
 describe('VariableItem Component', () => {
+  const mockTranslations = {
+    variable_key: 'Variable name',
+    variable_value: 'Variable value',
+    save: 'Save',
+    remove: 'Remove',
+  };
+
   const defaultProps = {
     name: 'testKey',
     value: 'testValue',
@@ -36,6 +48,9 @@ describe('VariableItem Component', () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
+    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
+      (key: keyof typeof mockTranslations) => mockTranslations[key]
+    );
   });
 
   it('renders with initial values and readonly state', () => {
