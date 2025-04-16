@@ -9,7 +9,7 @@ import { Link } from '@/i18n/navigation';
 export const Navigation: React.FC = () => {
   const t = useTranslations('Navigation');
   const path = usePathname();
-  const isActive = (href: string): boolean => href === path;
+  const isActive = (href: string): boolean => path.includes(href);
   return (
     <nav className={styles.navigation}>
       <Link

@@ -34,7 +34,7 @@ describe('useVariables Hook', () => {
 
   it('loads variables from localStorage on mount', () => {
     localStorage.setItem(
-      'variables',
+      'rss-variables',
       JSON.stringify([{ key: 'key1', value: 'value1' }])
     );
     const { result } = renderHook(() => useVariables());
@@ -57,7 +57,7 @@ describe('useVariables Hook', () => {
 
     const [variables] = result.current;
     expect(variables).toEqual([{ key: 'empty-0', value: '' }]);
-    expect(JSON.parse(localStorage.getItem('variables'))).toEqual([
+    expect(JSON.parse(localStorage.getItem('rss-variables'))).toEqual([
       { key: 'empty-0', value: '' },
     ]);
   });
@@ -80,7 +80,7 @@ describe('useVariables Hook', () => {
       { key: 'key1', value: 'value1' },
       { key: 'key2', value: 'value2' },
     ];
-    localStorage.setItem('variables', JSON.stringify(initialVariables));
+    localStorage.setItem('rss-variables', JSON.stringify(initialVariables));
     const { result } = renderHook(() => useVariables());
 
     act(() => {
@@ -94,7 +94,7 @@ describe('useVariables Hook', () => {
 
     const [variables] = result.current;
     expect(variables).toEqual([{ key: 'key2', value: 'value2' }]);
-    expect(JSON.parse(localStorage.getItem('variables'))).toEqual([
+    expect(JSON.parse(localStorage.getItem('rss-variables'))).toEqual([
       { key: 'key2', value: 'value2' },
     ]);
   });
@@ -109,6 +109,6 @@ describe('useVariables Hook', () => {
 
     const [variables] = result.current;
     expect(variables).toBeNull();
-    expect(localStorage.getItem('variables')).toBeNull();
+    expect(localStorage.getItem('rss-variables')).toBeNull();
   });
 });
