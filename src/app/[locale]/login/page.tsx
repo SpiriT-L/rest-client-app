@@ -6,10 +6,34 @@ import { getLoginValidationSchema } from '@/utils/validationSchema';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
 import { useTranslations } from 'next-intl';
-import { JSX } from 'react';
+import { JSX, useEffect, useState } from 'react';
+import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebase/config';
+import { useRouter } from 'next/navigation';
 
 export default function LoginPage(): JSX.Element {
   const t = useTranslations('Login');
+  const router = useRouter();
+  const [firebaseError, setFirebaseError] = useState<string | undefined>(
+    undefined
+  );
+
+  const [signInWithEmailAndPassword, userCredential, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+
+  useEffect(() => {
+    if (error) {
+      setFirebaseError(error.message);
+    } else {
+      setFirebaseError(undefined);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (userCredential) {
+      router.push('/');
+    }
+  }, [userCredential, router]);
 
   const formik = useFormik({
     initialValues: {
@@ -19,11 +43,7 @@ export default function LoginPage(): JSX.Element {
     validationSchema: getLoginValidationSchema(t),
     validateOnMount: true,
     onSubmit: async values => {
-      try {
-        console.log('Login:', values);
-      } catch (err) {
-        console.error('Error during login:', err);
-      }
+      await signInWithEmailAndPassword(values.email, values.password);
     },
   });
 
@@ -39,7 +59,7 @@ export default function LoginPage(): JSX.Element {
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.errors.email}
+          error={firebaseError || formik.errors.email}
           touched={formik.touched.email}
         />
 
@@ -54,7 +74,10 @@ export default function LoginPage(): JSX.Element {
           touched={formik.touched.password}
         />
 
-        <Button type="submit" disabled={!formik.isValid || formik.isSubmitting}>
+        <Button
+          type="submit"
+          disabled={!formik.isValid || formik.isSubmitting || loading}
+        >
           {t('buttons.login')}
         </Button>
       </form>

@@ -15,7 +15,10 @@
   "Navigation": {
     "rest_client": "Rest Client",
     "history": "History",
-    "variables": "Variables"
+    "variables": "Variables",
+    "sign_in": "Sign In",
+    "sing_up": "Sing up",
+    "sign_out": "Sign Out"
   },
   "NotSignedIn": {
     "not_signed_in": "You are not signed in",
@@ -27,6 +30,8 @@
   },
   "Register": {
     "title": "Register",
+    "success": "Registration successful!",
+    "message": "Check your email for confirmation.",
     "placeholders": {
       "email": "Email",
       "password": "Password",

@@ -18,7 +18,10 @@
   "Navigation": {
     "rest_client": "Rest Клиент",
     "history": "История",
-    "variables": "Переменные"
+    "variables": "Переменные",
+    "sign_in": "Войти",
+    "sing_up": "Зарегистрироваться",
+    "sign_out": "Выйти"
   },
   "NotSignedIn": {
     "not_signed_in": "Вы не вошли в систему",
@@ -30,6 +33,7 @@
   },
   "Register": {
     "title": "Регистрация",
+    "success": "Регистрация прошла успешна!",
     "placeholders": {
       "email": "Email",
       "password": "Пароль",

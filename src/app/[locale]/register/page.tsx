@@ -6,10 +6,39 @@ import { getValidationSchema } from '@/utils/validationSchema';
 import Input from '@/components/Input/Input';
 import Button from '@/components/Button/Button';
 import { useTranslations } from 'next-intl';
-import { JSX } from 'react';
+import { JSX, useEffect, useState } from 'react';
+import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { auth } from '@/firebase/config';
+import { useRouter } from 'next/navigation';
 
 export default function RegisterPage(): JSX.Element {
   const t = useTranslations('Register');
+  const router = useRouter();
+  const [emailError, setEmailError] = useState<string | undefined>(undefined);
+
+  const [
+    createUserWithEmailAndPassword,
+    userCredential,
+    loading,
+    firebaseError,
+  ] = useCreateUserWithEmailAndPassword(auth);
+
+  useEffect(() => {
+    if (firebaseError) {
+      setEmailError(firebaseError.message);
+    } else {
+      setEmailError(undefined);
+    }
+  }, [firebaseError]);
+
+  useEffect(() => {
+    if (userCredential) {
+      const timer = setTimeout(() => {
+        router.push('/login');
+      }, 3000);
+      return (): void => clearTimeout(timer);
+    }
+  }, [userCredential, router]);
 
   const formik = useFormik({
     initialValues: {
@@ -21,11 +50,7 @@ export default function RegisterPage(): JSX.Element {
     validationSchema: getValidationSchema(t),
     validateOnMount: true,
     onSubmit: async values => {
-      try {
-        console.log('Registr:', values);
-      } catch (err) {
-        console.error('Error during registration:', err);
-      }
+      await createUserWithEmailAndPassword(values.email, values.password);
     },
   });
 
@@ -41,7 +66,7 @@ export default function RegisterPage(): JSX.Element {
           value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
-          error={formik.errors.email}
+          error={emailError || formik.errors.email}
           touched={formik.touched.email}
         />
 
@@ -80,10 +105,14 @@ export default function RegisterPage(): JSX.Element {
           <p className={styles.error}>{formik.errors.accepted}</p>
         )}
 
-        <Button type="submit" disabled={!formik.isValid || formik.isSubmitting}>
+        <Button
+          type="submit"
+          disabled={!formik.isValid || formik.isSubmitting || loading}
+        >
           {t('buttons.register')}
         </Button>
       </form>
+      {userCredential && <p className={styles.success}>{t('success')}</p>}
     </div>
   );
 }

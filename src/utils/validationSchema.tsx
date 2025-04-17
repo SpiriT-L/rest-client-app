@@ -1,6 +1,13 @@
 import * as Yup from 'yup';
 
-export const getValidationSchema = (t: (key: string) => string) =>
+export const getValidationSchema = (
+  t: (key: string) => string
+): Yup.ObjectSchema<{
+  email: string;
+  password: string;
+  repeatPassword: string;
+  accepted: boolean;
+}> =>
   Yup.object({
     email: Yup.string()
       .email(t('validation.email'))
@@ -16,7 +23,12 @@ export const getValidationSchema = (t: (key: string) => string) =>
       .required(t('validation.requiredAcceptTerms')),
   });
 
-export const getLoginValidationSchema = (t: (key: string) => string) =>
+export const getLoginValidationSchema = (
+  t: (key: string) => string
+): Yup.ObjectSchema<{
+  email: string;
+  password: string;
+}> =>
   Yup.object({
     email: Yup.string()
       .email(t('validation.email'))
