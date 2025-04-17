@@ -21,14 +21,18 @@
     "not_signed_in": "You are not signed in",
     "come_back": "Please do it and come back"
   },
-  "VariableItem": {
-    "variable_key": "Variable name",
-    "variable_value": "Variable value"
-  },
   "Variables": {
     "variables": "Variables",
     "button_title": "Add new variable",
     "variable_key": "Variable name",
-    "variable_value": "Variable value"
+    "variable_value": "Variable value",
+    "no_variables": "No variables added yet"
+  },
+  "History": {
+    "history": "History",
+    "no_history": "You haven't executed any requests yet.",
+    "empty": "It's empty here.",
+    "options": "Try ",
+    "link": "REST-client"
   }
 }

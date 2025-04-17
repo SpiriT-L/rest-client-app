@@ -1,0 +1,31 @@
+@use '@/styles/variables' as *;
+
+.history {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 30px;
+
+  .empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .historyList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+  }
+
+  .historyItem {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+}

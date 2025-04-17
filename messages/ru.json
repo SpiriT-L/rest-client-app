@@ -24,14 +24,18 @@
     "not_signed_in": "Вы не вошли в систему",
     "come_back": "Пожалуйста, сделайте это и вернитесь"
   },
-  "VariableItem": {
-    "variable_key": "Имя переменной",
-    "variable_value": "Значение переменной"
-  },
   "Variables": {
     "variables": "Переменные",
     "button_title": "Добавить новую переменную",
     "variable_key": "Имя переменной",
-    "variable_value": "Значение переменной"
+    "variable_value": "Значение переменной",
+    "no_variables": "У вас пока нет переменных"
+  },
+  "History": {
+    "history": "История",
+    "no_history": "Вы пока не выполнили никаких запросов.",
+    "empty": "Здесь пусто.",
+    "options": "Попробуйте ",
+    "link": "REST-клиент"
   }
 }

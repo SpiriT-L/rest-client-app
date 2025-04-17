@@ -28,6 +28,7 @@ vi.mock('@/components/VariableItem/VariableItem', () => ({
 const mockTranslations = {
   variables: 'Variables',
   button_title: 'Add new variable',
+  no_variables: 'No variables added yet',
 };
 
 describe('Variables Component', () => {
