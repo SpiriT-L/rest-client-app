@@ -7,20 +7,22 @@
     "sign_in": "Войти",
     "sing_up": "Зарегистрироваться"
   },
+  "Footer": {
+    "nastya": "Анастасия Менько",
+    "dima": "Дмитрий Ярош",
+    "leonid": "Леонид Мацкевич"
+  },
   "language": {
     "switch": "En"
   },
   "Navigation": {
-    "rest_client": "Rest Client",
-    "history": "History",
-    "variables": "Variables"
+    "rest_client": "Rest Клиент",
+    "history": "История",
+    "variables": "Переменные"
   },
   "NotSignedIn": {
     "not_signed_in": "Вы не вошли в систему",
     "come_back": "Пожалуйста, сделайте это и вернитесь"
-  },
-  "VariableItem": {
-    "variable_value": "Переменное значение"
   },
   "Variables": {
     "variables": "Переменная",
@@ -62,6 +64,18 @@
       "requiredEmail": "Email обязателен",
       "passwordMinLength": "Пароль должен содержать не менее 6 символов",
       "requiredPassword": "Пароль обязателен"
-    }
+    },
+    "variables": "Переменные",
+    "button_title": "Добавить новую переменную",
+    "variable_key": "Имя переменной",
+    "variable_value": "Значение переменной",
+    "no_variables": "У вас пока нет переменных"
+  },
+  "History": {
+    "history": "История",
+    "no_history": "Вы пока не выполнили никаких запросов.",
+    "empty": "Здесь пусто.",
+    "options": "Попробуйте ",
+    "link": "REST-клиент"
   }
 }

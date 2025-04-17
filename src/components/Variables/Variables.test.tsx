@@ -5,7 +5,11 @@ import '@testing-library/jest-dom';
 import * as useVariablesHook from './useVariables';
 import styles from './Variables.module.scss';
 import Variables from '@/components/Variables/Variables';
+import { useTranslations } from 'next-intl';
 
+vi.mock('next-intl', () => ({
+  useTranslations: vi.fn(),
+}));
 vi.mock('@/components/VariableItem/VariableItem', () => ({
   VariableItem: ({
     name,
@@ -21,10 +25,19 @@ vi.mock('@/components/VariableItem/VariableItem', () => ({
   ),
 }));
 
+const mockTranslations = {
+  variables: 'Variables',
+  button_title: 'Add new variable',
+  no_variables: 'No variables added yet',
+};
+
 describe('Variables Component', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     localStorage.clear();
+    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
+      (key: keyof typeof mockTranslations) => mockTranslations[key]
+    );
   });
 
   it('renders with no variables initially', () => {

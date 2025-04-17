@@ -42,6 +42,7 @@ a {
 
   &.active {
     color: $color-link-active;
+    pointer-events: none;
   }
 
   &:hover {

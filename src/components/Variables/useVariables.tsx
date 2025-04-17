@@ -18,14 +18,14 @@ export const useVariables = (): [
       : [newVariable];
     const filteredVariables = updatedVariables.filter(v => v.value !== '');
     setVariables(filteredVariables);
-    localStorage.setItem('variables', JSON.stringify(filteredVariables));
+    localStorage.setItem('rss-variables', JSON.stringify(filteredVariables));
   };
 
   const removeVariable = (key: string): void => {
     if (!variables) return;
     const newVariables = variables.filter(v => v.key !== key);
     setVariables(newVariables);
-    localStorage.setItem('variables', JSON.stringify(newVariables));
+    localStorage.setItem('rss-variables', JSON.stringify(newVariables));
   };
 
   const addEmptyVariableItem = (): void => {
@@ -34,13 +34,13 @@ export const useVariables = (): [
     setVariables(prev => [newVariable, ...(prev || [])]);
     setEmptyVariableKey(prev => prev + 1);
     localStorage.setItem(
-      'variables',
+      'rss-variables',
       JSON.stringify([newVariable, ...(variables || [])])
     );
   };
 
   useEffect(() => {
-    const storedVariables = localStorage.getItem('variables');
+    const storedVariables = localStorage.getItem('rss-variables');
     if (storedVariables) {
       setVariables(JSON.parse(storedVariables));
     }

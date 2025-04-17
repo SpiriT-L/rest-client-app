@@ -35,7 +35,8 @@
     "node_modules/vitest/globals.d.ts",
     "node_modules/vitest/globals.d.ts",
     "node_modules/@types/node/globals.d.ts",
-    "node_modules/@types/node/module.d.ts"
+    "node_modules/@types/node/module.d.ts",
+    "node_modules/vitest/globals.d.ts"
   ],
   "exclude": ["node_modules"]
 }

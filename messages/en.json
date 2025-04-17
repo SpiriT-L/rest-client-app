@@ -7,6 +7,11 @@
     "sign_in": "Sign In",
     "sing_up": "Sing up"
   },
+  "Footer": {
+    "nastya": "Anastasiya Mianko",
+    "dima": "Dzmitry Yarash",
+    "leonid": "Leanid Matskevich"
+  },
   "Navigation": {
     "rest_client": "Rest Client",
     "history": "History",
@@ -15,9 +20,6 @@
   "NotSignedIn": {
     "not_signed_in": "You are not signed in",
     "come_back": "Please do it and come back"
-  },
-  "VariableItem": {
-    "variable_value": "Variable value"
   },
   "Variables": {
     "variables": "Variables",
@@ -59,6 +61,17 @@
       "requiredEmail": "Email is required",
       "passwordMinLength": "Password must be at least 6 characters",
       "requiredPassword": "Password is required"
-    }
+    },
+    "button_title": "Add new variable",
+    "variable_key": "Variable name",
+    "variable_value": "Variable value",
+    "no_variables": "No variables added yet"
+  },
+  "History": {
+    "history": "History",
+    "no_history": "You haven't executed any requests yet.",
+    "empty": "It's empty here.",
+    "options": "Try ",
+    "link": "REST-client"
   }
 }

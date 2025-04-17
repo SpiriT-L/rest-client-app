@@ -4,46 +4,75 @@ import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import { Navigation } from './Navigation';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import styles from './Navigation.module.scss';
+
+vi.mock('next-intl', () => ({
+  useTranslations: vi.fn(),
+}));
 
 vi.mock('next/navigation', () => ({
   usePathname: vi.fn(),
 }));
 
+vi.mock('@/i18n/navigation', () => ({
+  Link: ({ children, href, className }): React.JSX.Element => (
+    <a href={href} className={className} data-testid="mocked-link">
+      {children}
+    </a>
+  ),
+}));
+
 describe('Navigation Component', () => {
+  const mockTranslations = {
+    rest_client: 'Rest Client',
+    history: 'History',
+    variables: 'Variables',
+  };
+
   beforeEach(() => {
     vi.restoreAllMocks();
+    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
+      (key: keyof typeof mockTranslations) => mockTranslations[key]
+    );
+    (usePathname as vi.Mock).mockReturnValue('/');
   });
 
-  it('renders navigation links', () => {
-    (usePathname as vi.Mock).mockReturnValue('/');
+  it('renders navigation links with translations', () => {
     render(<Navigation />);
 
-    expect(screen.getByText('Rest-client')).toBeInTheDocument();
+    expect(screen.getByText('Rest Client')).toBeInTheDocument();
     expect(screen.getByText('History')).toBeInTheDocument();
     expect(screen.getByText('Variables')).toBeInTheDocument();
   });
 
-  it('applies "active" class to the correct link based on the current path', () => {
+  it('applies active class to the link matching the current path', () => {
     (usePathname as vi.Mock).mockReturnValue('/history');
     render(<Navigation />);
 
-    expect(screen.getByText('Rest-client')).not.toHaveClass('active');
-    expect(screen.getByText('History')).toHaveClass('active');
-    expect(screen.getByText('Variables')).not.toHaveClass('active');
+    const restClientLink = screen.getByText('Rest Client');
+    const historyLink = screen.getByText('History');
+    const variablesLink = screen.getByText('Variables');
+
+    expect(restClientLink).not.toHaveClass('active');
+    expect(historyLink).toHaveClass('active');
+    expect(variablesLink).not.toHaveClass('active');
   });
 
-  it('does not apply "active" class if no link matches the current path', () => {
+  it('does not apply active class for unmatched paths', () => {
     (usePathname as vi.Mock).mockReturnValue('/unknown-path');
     render(<Navigation />);
 
-    expect(screen.getByText('Rest-client')).not.toHaveClass('active');
-    expect(screen.getByText('History')).not.toHaveClass('active');
-    expect(screen.getByText('Variables')).not.toHaveClass('active');
+    const restClientLink = screen.getByText('Rest Client');
+    const historyLink = screen.getByText('History');
+    const variablesLink = screen.getByText('Variables');
+
+    expect(restClientLink).not.toHaveClass('active');
+    expect(historyLink).not.toHaveClass('active');
+    expect(variablesLink).not.toHaveClass('active');
   });
 
-  it('applies the correct styles to the navigation container', () => {
-    (usePathname as vi.Mock).mockReturnValue('/');
+  it('applies correct styles to the navigation container', () => {
     const { container } = render(<Navigation />);
 
     const nav = container.querySelector('nav');
@@ -51,11 +80,10 @@ describe('Navigation Component', () => {
     expect(nav).toHaveClass(styles.navigation);
   });
 
-  it('ensures "href" values for links are correct', () => {
-    (usePathname as vi.Mock).mockReturnValue('/');
+  it('renders links with correct href attributes', () => {
     render(<Navigation />);
 
-    const restClientLink = screen.getByText('Rest-client');
+    const restClientLink = screen.getByText('Rest Client');
     const historyLink = screen.getByText('History');
     const variablesLink = screen.getByText('Variables');
 
