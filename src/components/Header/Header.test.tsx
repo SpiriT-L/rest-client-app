@@ -1,85 +1,59 @@
-import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
-import Header from './Header';
 import styles from './Header.module.scss';
-import { useTranslations } from 'next-intl';
-import * as useIsSignedInHook from '@/hooks/useIsSignedIn';
-
-vi.mock('next-intl', () => ({
-  useTranslations: vi.fn(),
-}));
-
-vi.mock('@/hooks/useIsSignedIn', () => ({
-  useIsSignedIn: vi.fn(),
-}));
+import { Header } from '@/components/Header/Header';
+import { JSX } from 'react';
 
 vi.mock('next/image', () => ({
-  default: ({ src, alt, width, height }): React.JSX.Element => (
+  default: ({ src, alt, width, height, priority }): JSX.Element => (
     <div
       src={src}
       alt={alt}
       width={width}
       height={height}
       data-testid="mocked-image"
+      data-priority={priority ? 'true' : 'false'}
     />
   ),
 }));
 
 vi.mock('@/i18n/navigation', () => ({
-  Link: ({ children, href, ...props }): React.JSX.Element => (
+  Link: ({ children, href, ...props }): JSX.Element => (
     <a href={href} {...props} data-testid="mocked-link">
       {children}
     </a>
   ),
 }));
 
-vi.mock('../LanguageSwitcher/LanguageSwitcher', () => ({
-  default: (): React.JSX.Element => (
-    <div data-testid="language-switcher">Language Switcher</div>
-  ),
-}));
+vi.mock(
+  '../LanguageSwitcher/LanguageSwitcher',
+  (): { default: () => JSX.Element } => ({
+    default: () => <div data-testid="language-switcher">Language Switcher</div>,
+  })
+);
 
 vi.mock('@/components/Navigation/Navigation', () => ({
-  Navigation: (): React.JSX.Element => (
-    <nav data-testid="navigation">Navigation</nav>
-  ),
+  Navigation: (): JSX.Element => <nav data-testid="navigation">Navigation</nav>,
 }));
 
 describe('Header Component', () => {
-  const mockTranslations = {
-    sign_in: 'Sign In',
-    sing_up: 'Sign Up',
-  };
-
   beforeEach(() => {
-    vi.restoreAllMocks();
-    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
-      (key: keyof typeof mockTranslations) => mockTranslations[key]
-    );
-    (
-      useIsSignedInHook.useIsSignedIn as ReturnType<typeof vi.fn>
-    ).mockReturnValue(false);
+    vi.clearAllMocks();
   });
 
-  it('renders header with logo, links, and language switcher', () => {
+  it('renders header with logo, navigation, and language switcher', () => {
     render(<Header />);
 
-    expect(screen.getByTestId('mocked-image')).toHaveAttribute('alt', 'Logo');
-    expect(screen.getByText('Sign In')).toBeInTheDocument();
-    expect(screen.getByText('Sign Up')).toBeInTheDocument();
-    expect(screen.getByTestId('language-switcher')).toBeInTheDocument();
-    expect(screen.queryByTestId('navigation')).not.toBeInTheDocument();
-  });
+    const logoImage = screen.getByTestId('mocked-image');
+    expect(logoImage).toHaveAttribute('src', '/logo.svg');
+    expect(logoImage).toHaveAttribute('alt', 'Logo');
 
-  it('renders navigation when user is signed in', () => {
-    (
-      useIsSignedInHook.useIsSignedIn as ReturnType<typeof vi.fn>
-    ).mockReturnValue(true);
-    render(<Header />);
+    const logoLink = screen.getByTestId('mocked-link');
+    expect(logoLink).toHaveAttribute('href', '/');
 
     expect(screen.getByTestId('navigation')).toBeInTheDocument();
+    expect(screen.getByTestId('language-switcher')).toBeInTheDocument();
   });
 
   it('applies shrink class when scrolled beyond threshold', () => {
@@ -105,12 +79,22 @@ describe('Header Component', () => {
     expect(header).not.toHaveClass(styles.shrink);
   });
 
-  it('renders correct links with href attributes', () => {
-    render(<Header />);
+  it('adds and removes scroll event listener correctly', () => {
+    const addEventListenerSpy = vi.spyOn(window, 'addEventListener');
+    const removeEventListenerSpy = vi.spyOn(window, 'removeEventListener');
 
-    const links = screen.getAllByTestId('mocked-link');
-    expect(links[0]).toHaveAttribute('href', '/');
-    expect(links[1]).toHaveAttribute('href', '/');
-    expect(links[2]).toHaveAttribute('href', '/about');
+    const { unmount } = render(<Header />);
+
+    expect(addEventListenerSpy).toHaveBeenCalledWith(
+      'scroll',
+      expect.any(Function)
+    );
+
+    unmount();
+
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      'scroll',
+      expect.any(Function)
+    );
   });
 });

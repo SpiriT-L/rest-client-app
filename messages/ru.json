@@ -18,7 +18,10 @@
   "Navigation": {
     "rest_client": "Rest Клиент",
     "history": "История",
-    "variables": "Переменные"
+    "variables": "Переменные",
+    "sign_in": "Войти",
+    "sing_up": "Зарегистрироваться",
+    "sign_out": "Выйти"
   },
   "NotSignedIn": {
     "not_signed_in": "Вы не вошли в систему",
@@ -30,6 +33,45 @@
     "variable_key": "Имя переменной",
     "variable_value": "Значение переменной",
     "no_variables": "У вас пока нет переменных"
+  },
+  "Register": {
+    "title": "Регистрация",
+    "success": "Регистрация прошла успешна!",
+    "placeholders": {
+      "email": "Email",
+      "password": "Пароль",
+      "repeatPassword": "Повторите пароль",
+      "acceptTerms": "Я принимаю условия"
+    },
+    "buttons": {
+      "register": "Зарегистрироваться"
+    },
+    "validation": {
+      "email": "Введите действительный адрес электронной почты",
+      "requiredEmail": "Email обязателен",
+      "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+      "requiredPassword": "Пароль обязателен",
+      "passwordsMustMatch": "Пароли должны совпадать",
+      "requiredRepeatPassword": "Пожалуйста, повторите свой пароль",
+      "acceptTerms": "Вы должны принять условия",
+      "requiredAcceptTerms": "Принятие условий обязательно"
+    }
+  },
+  "Login": {
+    "title": "Авторизация",
+    "placeholders": {
+      "email": "Email",
+      "password": "Пароль"
+    },
+    "buttons": {
+      "login": "Войти"
+    },
+    "validation": {
+      "email": "Введите действительный адрес электронной почты",
+      "requiredEmail": "Email обязателен",
+      "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+      "requiredPassword": "Пароль обязателен"
+    }
   },
   "History": {
     "history": "История",
@@ -69,5 +111,9 @@
   },
   "UrlInput": {
     "placeholder": "Введите URL"
+  },
+  "NotFound": {
+    "not_found": "Страница не найдена",
+    "not_exist": "Очень жаль, но страница, которую Вы ищете, не существует."
   }
 }

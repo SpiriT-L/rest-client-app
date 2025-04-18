@@ -15,7 +15,10 @@
   "Navigation": {
     "rest_client": "Rest Client",
     "history": "History",
-    "variables": "Variables"
+    "variables": "Variables",
+    "sign_in": "Sign In",
+    "sing_up": "Sing up",
+    "sign_out": "Sign Out"
   },
   "NotSignedIn": {
     "not_signed_in": "You are not signed in",
@@ -27,6 +30,46 @@
     "variable_key": "Variable name",
     "variable_value": "Variable value",
     "no_variables": "No variables added yet"
+  },
+  "Register": {
+    "title": "Register",
+    "success": "Registration successful!",
+    "message": "Check your email for confirmation.",
+    "placeholders": {
+      "email": "Email",
+      "password": "Password",
+      "repeatPassword": "Repeat Password",
+      "acceptTerms": "I accept the terms"
+    },
+    "buttons": {
+      "register": "Register"
+    },
+    "validation": {
+      "email": "Enter a valid email",
+      "requiredEmail": "Email is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "requiredPassword": "Password is required",
+      "passwordsMustMatch": "Passwords must match",
+      "requiredRepeatPassword": "Please repeat your password",
+      "acceptTerms": "You must accept the terms",
+      "requiredAcceptTerms": "Accepting the terms is required"
+    }
+  },
+  "Login": {
+    "title": "Login",
+    "placeholders": {
+      "email": "Email",
+      "password": "Password"
+    },
+    "buttons": {
+      "login": "Login"
+    },
+    "validation": {
+      "email": "Enter a valid email",
+      "requiredEmail": "Email is required",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "requiredPassword": "Password is required"
+    }
   },
   "History": {
     "history": "History",
@@ -66,5 +109,9 @@
   },
   "UrlInput": {
     "placeholder": "Enter URL"
+  },
+  "NotFound": {
+    "not_found": "Page not found",
+    "not_exist": "Sorry, the page you are looking for does not exist."
   }
 }
