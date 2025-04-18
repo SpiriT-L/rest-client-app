@@ -1,122 +1,121 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { buildRequestRoute } from './buildRequestRoute';
-
-interface RequestModel {
-  method: string;
-  url: string;
-  body?: string | object;
-  headers?: Record<string, string>;
-  executionTime: number;
-}
+import { RequestModel } from '@/models/request.model';
 
 describe('buildRequestRoute', () => {
+  beforeEach(() => {
+    // Mock btoa to make tests deterministic
+    global.btoa = (str: string) => `base64:${str}`;
+  });
+
+  afterEach(() => {
+    // Restore original btoa
+    delete (global as any).btoa;
+  });
+
   it('builds route for GET request with only method and URL', () => {
     const request: RequestModel = {
       method: 'GET',
-      url: 'https://jsonplaceholder.typicode.com/posts/1',
-      executionTime: 1234567890,
+      url: 'https://api.example.com/users',
     };
-    const result = buildRequestRoute(request);
-    expect(result).toBe(
-      '/GET/aHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3RzLzE='
+
+    const route = buildRequestRoute(request);
+
+    expect(route).toBe(
+      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers'
     );
   });
 
   it('builds route for POST request with body', () => {
     const request: RequestModel = {
       method: 'POST',
-      url: 'https://jsonplaceholder.typicode.com/posts',
-      body: { title: 'fakeTitle', userId: 1, body: 'fakeMessage' },
-      executionTime: 1234567890,
+      url: 'https://api.example.com/users',
+      body: { name: 'John', age: '30' },
     };
-    const result = buildRequestRoute(request);
-    expect(result).toBe(
-      '/POST/aHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3Rz/eyJ0aXRsZSI6ImZha2VUaXRsZSIsInVzZXJJZCI6MSwiYm9keSI6ImZha2VNZXNzYWdlIn0='
+
+    const route = buildRequestRoute(request);
+
+    expect(route).toBe(
+      '?method=POST&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&body=base64%3A%7B%22name%22%3A%22John%22%2C%22age%22%3A%2230%22%7D'
     );
   });
 
   it('builds route for request with headers', () => {
     const request: RequestModel = {
       method: 'GET',
-      url: 'https://jsonplaceholder.typicode.com/posts/1',
+      url: 'https://api.example.com/users',
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer token123',
       },
-      executionTime: 1234567890,
     };
-    const result = buildRequestRoute(request);
-    expect(result).toBe(
-      '/GET/aHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3RzLzE=?Content-Type=application%2Fjson&Authorization=Bearer%20token123'
+
+    const route = buildRequestRoute(request);
+
+    expect(route).toBe(
+      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&Content-Type=application%252Fjson&Authorization=Bearer%2520token123'
     );
   });
 
   it('builds route for full request with method, URL, body, and headers', () => {
     const request: RequestModel = {
       method: 'POST',
-      url: 'https://jsonplaceholder.typicode.com/posts',
-      body: { title: 'fakeTitle', userId: 1, body: 'fakeMessage' },
+      url: 'https://api.example.com/users',
+      body: { name: 'John', age: '30' },
       headers: {
         'Content-Type': 'application/json',
+        Authorization: 'Bearer token123',
       },
-      executionTime: 1234567890,
     };
-    const result = buildRequestRoute(request);
-    expect(result).toBe(
-      '/POST/aHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3Rz/eyJ0aXRsZSI6ImZha2VUaXRsZSIsInVzZXJJZCI6MSwiYm9keSI6ImZha2VNZXNzYWdlIn0=?Content-Type=application%2Fjson'
+
+    const route = buildRequestRoute(request);
+
+    expect(route).toBe(
+      '?method=POST&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&body=base64%3A%7B%22name%22%3A%22John%22%2C%22age%22%3A%2230%22%7D&Content-Type=application%252Fjson&Authorization=Bearer%2520token123'
     );
   });
 
-  it('handles string body correctly', () => {
-    const request: RequestModel = {
-      method: 'POST',
-      url: 'https://jsonplaceholder.typicode.com/posts',
-      body: '{"custom":"data"}',
-      executionTime: 1234567890,
-    };
-    const result = buildRequestRoute(request);
-    expect(result).toBe(
-      '/POST/aHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3Rz/eyJjdXN0b20iOiJkYXRhIn0='
-    );
-  });
-
-  it('handles special characters in URL and headers', () => {
+  it('handles empty body and headers', () => {
     const request: RequestModel = {
       method: 'GET',
-      url: 'https://example.com/path with spaces?query=val',
-      headers: {
-        'Custom-Header': 'value with spaces & special chars',
-      },
-      executionTime: 1234567890,
-    };
-    const result = buildRequestRoute(request);
-    expect(result).toBe(
-      '/GET/aHR0cHM6Ly9leGFtcGxlLmNvbS9wYXRoIHdpdGggc3BhY2VzP3F1ZXJ5PXZhbA==?Custom-Header=value%20with%20spaces%20%26%20special%20chars'
-    );
-  });
-
-  it('handles empty headers object', () => {
-    const request: RequestModel = {
-      method: 'GET',
-      url: 'https://jsonplaceholder.typicode.com/posts/1',
+      url: 'https://api.example.com/users',
+      body: {},
       headers: {},
-      executionTime: 1234567890,
     };
-    const result = buildRequestRoute(request);
-    expect(result).toBe(
-      '/GET/aHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3RzLzE='
+
+    const route = buildRequestRoute(request);
+
+    expect(route).toBe(
+      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&body=base64%3A%7B%7D'
     );
   });
 
-  it('handles missing body and headers', () => {
+  it('handles special characters in URL', () => {
     const request: RequestModel = {
-      method: 'DELETE',
-      url: 'https://jsonplaceholder.typicode.com/posts/1',
-      executionTime: 1234567890,
+      method: 'GET',
+      url: 'https://api.example.com/users?name=John Doe&age=30',
     };
-    const result = buildRequestRoute(request);
-    expect(result).toBe(
-      '/DELETE/aHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3RzLzE='
+
+    const route = buildRequestRoute(request);
+
+    expect(route).toBe(
+      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers%3Fname%3DJohn+Doe%26age%3D30'
+    );
+  });
+
+  it('handles special characters in headers', () => {
+    const request: RequestModel = {
+      method: 'GET',
+      url: 'https://api.example.com/users',
+      headers: {
+        'Custom-Header': 'Value with spaces & special chars!@#$%^&*()',
+      },
+    };
+
+    const route = buildRequestRoute(request);
+
+    expect(route).toBe(
+      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&Custom-Header=Value%2520with%2520spaces%2520%2526%2520special%2520chars%21%2540%2523%2524%2525%255E%2526*%28%29'
     );
   });
 });

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { RestClientState, HttpMethod, Header } from '@/models/rest-client';
 import { useVariables } from '@/components/Variables/useVariables';
+import { useHistory } from '@/components/History/useHistory';
 import { substituteVariables } from '@/utils/variableSubstitution';
 import MethodSelector from '../MethodSelector/MethodSelector';
 import UrlInput from '../UrlInput/UrlInput';
@@ -41,6 +42,7 @@ export default function RestClient() {
   const [isClient, setIsClient] = useState(false);
   const pendingUrlUpdate = useRef<RestClientState | null>(null);
   const [variables] = useVariables();
+  const { addRequestToHistory } = useHistory();
   const t = useTranslations('RestClient');
   useEffect(() => {
     setIsClient(true);
@@ -82,21 +84,28 @@ export default function RestClient() {
       const newState = pendingUrlUpdate.current;
       const params = new URLSearchParams();
       params.set('method', newState.method);
-      params.set('url', safeBtoa(newState.url));
+
+      // Substitute variables in URL before encoding
+      const substitutedUrl = substituteVariables(newState.url, variables);
+      params.set('url', safeBtoa(substitutedUrl));
 
       if (newState.body) {
-        params.set('body', safeBtoa(newState.body));
+        // Substitute variables in body before encoding
+        const substitutedBody = substituteVariables(newState.body, variables);
+        params.set('body', safeBtoa(substitutedBody));
       }
 
+      // Substitute variables in headers before encoding
       newState.headers.forEach(header => {
-        params.set(header.key, encodeURIComponent(header.value));
+        const substitutedValue = substituteVariables(header.value, variables);
+        params.set(header.key, encodeURIComponent(substitutedValue));
       });
 
       const newUrl = `/rest-client?${params.toString()}`;
       router.push(newUrl, { scroll: false });
       pendingUrlUpdate.current = null;
     }
-  }, [state, isClient, router]);
+  }, [state, isClient, router, variables]);
 
   const handleMethodChange = useCallback((method: HttpMethod) => {
     setState(prev => {
@@ -152,6 +161,20 @@ export default function RestClient() {
       });
 
       const responseBody = await response.text();
+
+      addRequestToHistory({
+        url: substitutedUrl,
+        method: state.method,
+        headers: substitutedHeaders.reduce(
+          (acc, { key, value }) => {
+            acc[key] = value;
+            return acc;
+          },
+          {} as Record<string, string>
+        ),
+        body: substitutedBody ? JSON.parse(substitutedBody) : undefined,
+        executionTime: Date.now(),
+      });
 
       setState(prev => ({
         ...prev,
