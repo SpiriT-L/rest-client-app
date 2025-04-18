@@ -33,7 +33,11 @@ const Input: React.FC<InputProps> = ({
         onChange={onChange}
         onBlur={onBlur}
       />
-      {touched && error && <p className={styles.error}>{error}</p>}
+      {touched && error && (
+        <p role="alert" className={styles.error}>
+          {error}
+        </p>
+      )}
     </div>
   );
 };

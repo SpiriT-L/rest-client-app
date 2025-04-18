@@ -9,8 +9,9 @@
 .componentHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
   gap: 10px;
+  color: $color-white;
 }
 
 .componentHeader h3 {
@@ -30,7 +31,7 @@
   line-height: 1.5;
   resize: vertical;
   background-color: $color-background-primary;
-  color: $color-primary;
+  color: $color-white;
   transition: all 0.3s ease;
 
   &:focus {
@@ -46,13 +47,13 @@
 }
 
 .formatButton {
-  padding: 5px 10px;
+  padding: 10px 20px;
   background-color: transparent;
   color: $color-link;
   border: 1px solid $color-primary;
   border-radius: 5px;
-  @include body-font(12px);
   cursor: pointer;
+  font-weight: 500;
   transition: all 0.3s ease;
 
   &:hover {

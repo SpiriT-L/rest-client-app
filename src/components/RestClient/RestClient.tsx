@@ -211,7 +211,11 @@ export default function RestClient(): JSX.Element | null {
           title={t('request_body')}
         />
 
-        <button onClick={handleSubmit} className={styles.submitButton}>
+        <button
+          onClick={handleSubmit}
+          className={styles.submitButton}
+          disabled={!state.url.trim()}
+        >
           {t('send_request')}
         </button>
       </div>

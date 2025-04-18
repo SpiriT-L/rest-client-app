@@ -7,9 +7,12 @@
   @include body-font(14px);
   min-width: 100px;
   background-color: $color-background-primary;
-  color: $color-primary;
+  color: $color-white;
   cursor: pointer;
   transition: all 0.3s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
   &:focus {
     outline: none;

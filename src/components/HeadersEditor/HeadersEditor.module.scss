@@ -2,8 +2,8 @@
 
 .componentContainer {
   display: flex;
-  gap: 10px;
   flex-direction: column;
+  gap: 10px;
 }
 
 .headersList {
@@ -16,14 +16,12 @@
   display: grid;
   grid-template-columns: 1fr 1fr 200px;
   gap: 10px;
-  align-items: center;
 }
 
 .newHeader {
   display: grid;
   grid-template-columns: 1fr 1fr 200px;
   gap: 10px;
-  align-items: center;
 }
 
 .input {
@@ -33,7 +31,7 @@
   border-radius: 5px;
   @include body-font(14px);
   background-color: $color-background-primary;
-  color: $color-primary;
+  color: $color-white;
   transition: all 0.3s ease;
 
   &:focus {

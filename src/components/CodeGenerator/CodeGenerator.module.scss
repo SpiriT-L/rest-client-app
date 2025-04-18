@@ -9,35 +9,46 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
 }
 
 .header h3 {
   margin: 0;
+  color: $color-white;
   font-size: 1.1rem;
   font-weight: 500;
 }
 
 .select {
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  background-color: white;
+  padding: 10px;
+  border: 1px solid $color-primary;
+  border-radius: 5px;
+  @include body-font(14px);
+  min-width: 100px;
+  background-color: $color-background-primary;
+  color: $color-white;
   cursor: pointer;
-}
+  transition: all 0.3s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
-.select:focus {
-  outline: none;
-  border-color: #0070f3;
-  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.1);
+  &:focus {
+    outline: none;
+    border-color: $color-link;
+    box-shadow: 0 0 0 2px rgba(255, 255, 224, 0.1);
+  }
 }
 
 .code {
-  background-color: #f8f9fa;
+  background-color: transparent;
+  color: $color-white;
   border-radius: 4px;
   padding: 1rem;
   overflow-x: auto;
+  padding: 10px;
+  border: 1px solid $color-primary;
+  border-radius: 5px;
 }
 
 .pre {

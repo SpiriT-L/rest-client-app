@@ -17,8 +17,7 @@
 
 .requestControls {
   display: flex;
-  gap: 20px;
-  align-items: center;
+  gap: 10px;
 }
 
 .responseSection {
@@ -46,7 +45,6 @@
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
-  align-self: flex-start;
 
   &:hover {
     color: $color-link-hover;
@@ -54,7 +52,7 @@
   }
 
   &:disabled {
-    background-color: $color-secondary;
+    color: $color-secondary;
     cursor: not-allowed;
     border-color: $color-secondary;
   }
