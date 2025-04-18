@@ -3,16 +3,12 @@
 import styles from './Header.module.scss';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { useIsSignedIn } from '@/hooks/useIsSignedIn';
 import { Navigation } from '@/components/Navigation/Navigation';
-import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 
-const Header: React.FC = () => {
-  const t = useTranslations('Header');
+export const Header: React.FC = () => {
   const [isShrunk, setIsShrunk] = useState(false);
-  const isSignedIn = useIsSignedIn();
 
   useEffect(() => {
     const handleScroll = (): void => {
@@ -34,31 +30,16 @@ const Header: React.FC = () => {
       <header className={`${styles.header} ${isShrunk ? styles.shrink : ''}`}>
         <div className={styles.headerContainer}>
           <div className={styles.logo}>
-            <Link href="/" className={styles.logoLink}>
+            <Link href="/">
               <Image src="/logo.svg" alt="Logo" width={100} height={50} />
             </Link>
           </div>
-
-          {isSignedIn && <Navigation />}
-          <nav className={styles.nav}>
-            <ul className={styles.navItems}>
-              <li>
-                <Link href="/" className={styles.navItem}>
-                  {t('sign_in')}
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className={styles.navItem}>
-                  {t('sing_up')}
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          <div className={styles.menu}>
+            <Navigation />
+            <LanguageSwitcher />
+          </div>
         </div>
-        <LanguageSwitcher />
       </header>
     </>
   );
 };
-
-export default Header;

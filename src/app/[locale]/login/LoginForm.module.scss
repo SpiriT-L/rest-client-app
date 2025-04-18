@@ -1,0 +1,17 @@
+@use '@/styles/variables' as *;
+
+.formContainer {
+  max-width: 400px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: $color-background-primary;
+  border: 1px solid $color-border-bottom;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}

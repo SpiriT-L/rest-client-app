@@ -29,7 +29,7 @@ vi.mock('@/hocs/authCheck', () => ({
 }));
 
 describe('HistoryPage Component', () => {
-  it('renders the Hsitory component wrapped in authCheck after loading', async () => {
+  it('renders the History component wrapped in authCheck after loading', async () => {
     render(<HistoryPage />);
 
     await waitFor(() => {

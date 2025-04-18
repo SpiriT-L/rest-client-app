@@ -1,0 +1,13 @@
+@use '@/styles/variables' as *;
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  padding: 40px;
+  color: $color-primary;
+  background: $color-background-primary;
+  height: 100vh;
+}
