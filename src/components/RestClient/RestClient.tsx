@@ -51,12 +51,10 @@ export default function RestClient(): JSX.Element | null {
   useEffect(() => {
     if (!isInitialized && isClient) {
       const method = (searchParams.get('method') as HttpMethod) || 'GET';
-      const url = searchParams.get('url')
-        ? safeAtob(searchParams.get('url')!)
-        : '';
-      const body = searchParams.get('body')
-        ? safeAtob(searchParams.get('body')!)
-        : '';
+      const urlParam = searchParams.get('url');
+      const bodyParam = searchParams.get('body');
+      const url = urlParam ? safeAtob(urlParam) : '';
+      const body = bodyParam ? safeAtob(bodyParam) : '';
 
       const headers: Header[] = [];
       searchParams.forEach((value, key) => {
