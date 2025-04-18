@@ -78,6 +78,38 @@
     "options": "Try ",
     "link": "REST-client"
   },
+  "BodyEditor": {
+    "title_edit": "Request Body",
+    "title_view": "Response Body",
+    "format_json": "Format JSON",
+    "format_error": "Invalid JSON format",
+    "format_placeholder_edit": "Enter request body (JSON or plain text)",
+    "format_placeholder_view": "No response body"
+  },
+  "HeadersEditor": {
+    "add_header": "Add header",
+    "remove_header": "Remove header",
+    "new_header_key": "New header key",
+    "new_header_value": "New header value",
+    "header_name": "Header name",
+    "header_value": "Header value"
+  },
+  "CodeGenerator": {
+    "title": "Code generator"
+  },
+  "RestClient": {
+    "send_request": "Send request",
+    "response_status": "Response status",
+    "response_body": "Response body",
+    "response_headers": "Response headers",
+    "response_time": "Response time",
+    "response_error": "Response error",
+    "response_error_message": "Failed to make request",
+    "request_body": "Request body"
+  },
+  "UrlInput": {
+    "placeholder": "Enter URL"
+  },
   "NotFound": {
     "not_found": "Page not found",
     "not_exist": "Sorry, the page you are looking for does not exist."

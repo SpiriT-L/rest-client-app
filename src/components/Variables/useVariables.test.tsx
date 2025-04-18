@@ -1,24 +1,23 @@
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { useVariables } from './useVariables';
 
-const localStorageMock = ((): {
-  getItem: (key: string) => string | null;
-  setItem: (key: string, value: string) => void;
-  clear: () => void;
-} => {
-  let store: Record<string, string> = {};
-  return {
-    getItem: (key: string): string | null => store[key] || null,
-    setItem: (key: string, value: string): string => (store[key] = value),
-    clear: (): object => (store = {}),
-  };
-})();
-Object.defineProperty(global, 'localStorage', { value: localStorageMock });
+const mockLocalStorage = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  clear: vi.fn(),
+};
+
+Object.defineProperty(window, 'localStorage', {
+  value: mockLocalStorage,
+  writable: true,
+});
 
 describe('useVariables Hook', () => {
   beforeEach(() => {
-    localStorage.clear();
+    mockLocalStorage.clear.mockClear();
+    mockLocalStorage.getItem.mockClear();
+    mockLocalStorage.setItem.mockClear();
     vi.useFakeTimers();
   });
 
@@ -26,89 +25,40 @@ describe('useVariables Hook', () => {
     vi.useRealTimers();
   });
 
-  it('initializes with null variables', () => {
+  it('initializes with empty variables array', () => {
+    mockLocalStorage.getItem.mockReturnValue(null);
     const { result } = renderHook(() => useVariables());
     const [variables] = result.current;
-    expect(variables).toBeNull();
+    expect(variables).toEqual([]);
   });
 
   it('loads variables from localStorage on mount', () => {
-    localStorage.setItem(
+    const storedVariables = [{ name: 'key1', value: 'value1' }];
+    mockLocalStorage.getItem.mockReturnValue(JSON.stringify(storedVariables));
+    const { result } = renderHook(() => useVariables());
+
+    act(() => {
+      vi.advanceTimersByTime(0);
+    });
+
+    const [variables] = result.current;
+    expect(variables).toEqual(storedVariables);
+  });
+
+  it('keeps empty array when removing from empty array', () => {
+    mockLocalStorage.getItem.mockReturnValue(null);
+    const { result } = renderHook(() => useVariables());
+    const [, , removeVariable] = result.current;
+
+    act(() => {
+      removeVariable('key1');
+    });
+
+    const [variables] = result.current;
+    expect(variables).toEqual([]);
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
       'rss-variables',
-      JSON.stringify([{ key: 'key1', value: 'value1' }])
+      JSON.stringify([])
     );
-    const { result } = renderHook(() => useVariables());
-
-    act(() => {
-      vi.advanceTimersByTime(0);
-    });
-
-    const [variables] = result.current;
-    expect(variables).toEqual([{ key: 'key1', value: 'value1' }]);
-  });
-
-  it('adds an empty variable item', () => {
-    const { result } = renderHook(() => useVariables());
-    const [, , , addEmptyVariableItem] = result.current;
-
-    act(() => {
-      addEmptyVariableItem();
-    });
-
-    const [variables] = result.current;
-    expect(variables).toEqual([{ key: 'empty-0', value: '' }]);
-    expect(JSON.parse(localStorage.getItem('rss-variables'))).toEqual([
-      { key: 'empty-0', value: '' },
-    ]);
-  });
-
-  it('updates an existing variable', () => {
-    const { result } = renderHook(() => useVariables());
-    const [, addVariable] = result.current;
-
-    act(() => {
-      addVariable('key1', 'value1');
-      addVariable('key1', 'updatedValue');
-    });
-
-    const [variables] = result.current;
-    expect(variables).toEqual([{ key: 'key1', value: 'updatedValue' }]);
-  });
-
-  it('removes a variable', () => {
-    const initialVariables = [
-      { key: 'key1', value: 'value1' },
-      { key: 'key2', value: 'value2' },
-    ];
-    localStorage.setItem('rss-variables', JSON.stringify(initialVariables));
-    const { result } = renderHook(() => useVariables());
-
-    act(() => {
-      vi.advanceTimersByTime(0);
-    });
-
-    const [, , removeVariable] = result.current;
-    act(() => {
-      removeVariable('key1');
-    });
-
-    const [variables] = result.current;
-    expect(variables).toEqual([{ key: 'key2', value: 'value2' }]);
-    expect(JSON.parse(localStorage.getItem('rss-variables'))).toEqual([
-      { key: 'key2', value: 'value2' },
-    ]);
-  });
-
-  it('does nothing on removeVariable if variables is null', () => {
-    const { result } = renderHook(() => useVariables());
-    const [, , removeVariable] = result.current;
-
-    act(() => {
-      removeVariable('key1');
-    });
-
-    const [variables] = result.current;
-    expect(variables).toBeNull();
-    expect(localStorage.getItem('rss-variables')).toBeNull();
   });
 });

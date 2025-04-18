@@ -1,25 +1,25 @@
 import { RequestModel } from '@/models/request.model';
 
 export const buildRequestRoute = (request: RequestModel): string => {
-  const encodedUrl = btoa(request.url);
+  const params = new URLSearchParams();
 
-  let route = `/${request.method}/${encodedUrl}`;
+  params.set('method', request.method);
+
+  params.set('url', btoa(request.url));
 
   if (request.body) {
     const bodyString =
       typeof request.body === 'string'
         ? request.body
         : JSON.stringify(request.body);
-    const encodedBody = btoa(bodyString);
-    route += `/${encodedBody}`;
+    params.set('body', btoa(bodyString));
   }
 
-  if (request.headers && Object.keys(request.headers).length > 0) {
-    const queryParams = Object.entries(request.headers)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join('&');
-    route += `?${queryParams}`;
+  if (request.headers) {
+    Object.entries(request.headers).forEach(([key, value]) => {
+      params.set(key, encodeURIComponent(value));
+    });
   }
 
-  return route;
+  return `?${params.toString()}`;
 };
