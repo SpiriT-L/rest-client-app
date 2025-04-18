@@ -34,7 +34,6 @@ describe('CodeGenerator', () => {
       return key;
     });
 
-    // Mock useVariables
     (useVariables as Mock).mockReturnValue([[]]);
   });
 

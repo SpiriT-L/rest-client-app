@@ -18,7 +18,6 @@ describe('MethodSelector', () => {
   it('renders all HTTP methods', () => {
     render(<MethodSelector value={initialMethod} onChange={mockOnChange} />);
 
-    // Check if all methods are rendered
     expect(screen.getByText('GET')).toBeInTheDocument();
     expect(screen.getByText('POST')).toBeInTheDocument();
     expect(screen.getByText('PUT')).toBeInTheDocument();
