@@ -3,7 +3,7 @@ import { Variable } from '@/models/variable';
 import { codeTemplates } from './codeTemplates';
 import { substituteVariables } from './variableSubstitution';
 
-const escapeString = (str: string): string => {
+export const escapeString = (str: string): string => {
   return str
     .replace(/\\/g, '\\\\')
     .replace(/"/g, '\\"')
@@ -12,7 +12,7 @@ const escapeString = (str: string): string => {
     .replace(/\t/g, '\\t');
 };
 
-const formatJson = (json: string): string => {
+export const formatJson = (json: string): string => {
   try {
     const parsed = JSON.parse(json);
     return JSON.stringify(parsed);
@@ -21,7 +21,7 @@ const formatJson = (json: string): string => {
   }
 };
 
-const validateJson = (json: string): boolean => {
+export const validateJson = (json: string): boolean => {
   try {
     JSON.parse(json);
     return true;
@@ -30,7 +30,10 @@ const validateJson = (json: string): boolean => {
   }
 };
 
-const prepareBodyForLanguage = (body: string, language: string): string => {
+export const prepareBodyForLanguage = (
+  body: string,
+  language: string
+): string => {
   if (!body) return '';
 
   const formattedBody = formatJson(body);

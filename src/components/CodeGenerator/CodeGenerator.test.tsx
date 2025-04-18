@@ -6,7 +6,6 @@ import { useVariables } from '@/components/Variables/useVariables';
 import { RestClientState, HttpMethod } from '@/models/rest-client';
 import type { Mock } from 'vitest';
 
-// Mock the hooks
 vi.mock('next-intl', () => ({
   useTranslations: vi.fn(),
 }));
@@ -28,7 +27,6 @@ describe('CodeGenerator', () => {
   };
 
   beforeEach(() => {
-    // Mock useTranslations
     (useTranslations as Mock).mockReturnValue((key: string) => {
       if (key === 'title') return 'Generated Code';
       return key;
