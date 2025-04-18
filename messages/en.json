@@ -26,7 +26,10 @@
   },
   "Variables": {
     "variables": "Variables",
-    "button_title": "Add new variable"
+    "button_title": "Add new variable",
+    "variable_key": "Variable name",
+    "variable_value": "Variable value",
+    "no_variables": "No variables added yet"
   },
   "Register": {
     "title": "Register",
@@ -66,11 +69,7 @@
       "requiredEmail": "Email is required",
       "passwordMinLength": "Password must be at least 6 characters",
       "requiredPassword": "Password is required"
-    },
-    "button_title": "Add new variable",
-    "variable_key": "Variable name",
-    "variable_value": "Variable value",
-    "no_variables": "No variables added yet"
+    }
   },
   "History": {
     "history": "History",
@@ -78,5 +77,9 @@
     "empty": "It's empty here.",
     "options": "Try ",
     "link": "REST-client"
+  },
+  "NotFound": {
+    "not_found": "Page not found",
+    "not_exist": "Sorry, the page you are looking for does not exist."
   }
 }

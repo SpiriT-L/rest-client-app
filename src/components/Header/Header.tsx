@@ -7,7 +7,7 @@ import { Navigation } from '@/components/Navigation/Navigation';
 import { Link } from '@/i18n/navigation';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 
-const Header: React.FC = () => {
+export const Header: React.FC = () => {
   const [isShrunk, setIsShrunk] = useState(false);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Header: React.FC = () => {
       <header className={`${styles.header} ${isShrunk ? styles.shrink : ''}`}>
         <div className={styles.headerContainer}>
           <div className={styles.logo}>
-            <Link href="/" className={styles.logoLink}>
+            <Link href="/">
               <Image src="/logo.svg" alt="Logo" width={100} height={50} />
             </Link>
           </div>
@@ -43,5 +43,3 @@ const Header: React.FC = () => {
     </>
   );
 };
-
-export default Header;

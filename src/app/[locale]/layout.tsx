@@ -1,11 +1,11 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import Header from '@/components/Header/Header';
 import '@/styles/globals.scss';
 import { JSX } from 'react';
 import Footer from '@/components/Footer/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary/ErrorBoundary';
+import { Header } from '@/components/Header/Header';
 
 export const metadata = {
   title: 'Rest Client App',
@@ -32,11 +32,11 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages.default}>
-          <Header />
-          <main>
-            <ErrorBoundary>{children}</ErrorBoundary>
-          </main>
-          <Footer />
+          <ErrorBoundary>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </ErrorBoundary>
         </NextIntlClientProvider>
       </body>
     </html>
