@@ -47,13 +47,13 @@
 }
 
 .formatButton {
-  padding: 5px 10px;
+  padding: 10px 20px;
   background-color: transparent;
   color: $color-link;
   border: 1px solid $color-primary;
   border-radius: 5px;
-  @include body-font(12px);
   cursor: pointer;
+  font-weight: 500;
   transition: all 0.3s ease;
 
   &:hover {
