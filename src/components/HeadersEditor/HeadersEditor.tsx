@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, JSX } from 'react';
 import styles from './HeadersEditor.module.scss';
 import { Header } from '@/models/rest-client';
 import { useTranslations } from 'next-intl';
@@ -12,18 +12,18 @@ interface HeadersEditorProps {
 export default function HeadersEditor({
   headers,
   onChange,
-}: HeadersEditorProps) {
+}: HeadersEditorProps): JSX.Element {
   const t = useTranslations('HeadersEditor');
   const [newHeader, setNewHeader] = useState<Header>({ key: '', value: '' });
 
-  const handleAddHeader = () => {
+  const handleAddHeader = (): void => {
     if (newHeader.key && newHeader.value) {
       onChange([...headers, newHeader]);
       setNewHeader({ key: '', value: '' });
     }
   };
 
-  const handleRemoveHeader = (index: number) => {
+  const handleRemoveHeader = (index: number): void => {
     onChange(headers.filter((_, i) => i !== index));
   };
 
@@ -31,7 +31,7 @@ export default function HeadersEditor({
     index: number,
     field: keyof Header,
     value: string
-  ) => {
+  ): void => {
     const updatedHeaders = [...headers];
     updatedHeaders[index] = { ...updatedHeaders[index], [field]: value };
     onChange(updatedHeaders);

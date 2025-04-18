@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, JSX } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { RestClientState, HttpMethod, Header } from '@/models/rest-client';
 import { useVariables } from '@/components/Variables/useVariables';
@@ -24,17 +24,17 @@ const DEFAULT_STATE: RestClientState = {
   },
 };
 
-const safeBtoa = (str: string) => {
+const safeBtoa = (str: string): string => {
   if (typeof window === 'undefined') return '';
   return btoa(str);
 };
 
-const safeAtob = (str: string) => {
+const safeAtob = (str: string): string => {
   if (typeof window === 'undefined') return '';
   return atob(str);
 };
 
-export default function RestClient() {
+export default function RestClient(): JSX.Element | null {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [state, setState] = useState<RestClientState>(DEFAULT_STATE);
@@ -84,18 +84,14 @@ export default function RestClient() {
       const newState = pendingUrlUpdate.current;
       const params = new URLSearchParams();
       params.set('method', newState.method);
-
-      // Substitute variables in URL before encoding
       const substitutedUrl = substituteVariables(newState.url, variables);
       params.set('url', safeBtoa(substitutedUrl));
 
       if (newState.body) {
-        // Substitute variables in body before encoding
         const substitutedBody = substituteVariables(newState.body, variables);
         params.set('body', safeBtoa(substitutedBody));
       }
 
-      // Substitute variables in headers before encoding
       newState.headers.forEach(header => {
         const substitutedValue = substituteVariables(header.value, variables);
         params.set(header.key, encodeURIComponent(substitutedValue));
@@ -139,7 +135,7 @@ export default function RestClient() {
     });
   }, []);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     try {
       const substitutedUrl = substituteVariables(state.url, variables);
       const substitutedHeaders = state.headers.map(header => ({

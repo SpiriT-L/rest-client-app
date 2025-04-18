@@ -6,12 +6,10 @@ import {
   validateJson,
   prepareBodyForLanguage,
 } from './codeGenerator';
-import { codeTemplates } from './codeTemplates';
 import { substituteVariables } from './variableSubstitution';
 import { RestClientState } from '@/models/rest-client';
 import { Variable } from '@/models/variable';
 
-// Mock the dependencies
 vi.mock('./variableSubstitution', () => ({
   substituteVariables: vi.fn((text: string) => text),
 }));
@@ -22,8 +20,6 @@ vi.mock('./codeTemplates', () => ({
       ({
         method,
         url,
-        headers,
-        body,
       }: {
         method: string;
         url: string;
@@ -35,8 +31,6 @@ vi.mock('./codeTemplates', () => ({
       ({
         method,
         url,
-        headers,
-        body,
       }: {
         method: string;
         url: string;

@@ -1,33 +1,28 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import RestClient from './RestClient';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useVariables } from '@/components/Variables/useVariables';
 import { useHistory } from '@/components/History/useHistory';
 import { useTranslations } from 'next-intl';
-
-// Mock next/navigation
+import { JSX } from 'react';
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
   useSearchParams: vi.fn(),
 }));
 
-// Mock useVariables
 vi.mock('@/components/Variables/useVariables', () => ({
   useVariables: vi.fn(),
 }));
 
-// Mock useHistory
 vi.mock('@/components/History/useHistory', () => ({
   useHistory: vi.fn(),
 }));
 
-// Mock useTranslations
 vi.mock('next-intl', () => ({
   useTranslations: vi.fn(),
 }));
 
-// Mock child components
 vi.mock('@/components/MethodSelector/MethodSelector', () => ({
   default: ({
     value,
@@ -35,7 +30,7 @@ vi.mock('@/components/MethodSelector/MethodSelector', () => ({
   }: {
     value: string;
     onChange: (value: string) => void;
-  }) => (
+  }): JSX.Element => (
     <select
       data-testid="method-selector"
       value={value}
@@ -54,7 +49,7 @@ vi.mock('@/components/UrlInput/UrlInput', () => ({
   }: {
     value: string;
     onChange: (value: string) => void;
-  }) => (
+  }): JSX.Element => (
     <input
       data-testid="url-input"
       type="text"
@@ -71,7 +66,7 @@ vi.mock('@/components/HeadersEditor/HeadersEditor', () => ({
   }: {
     headers: { key: string; value: string }[];
     onChange?: (headers: { key: string; value: string }[]) => void;
-  }) => (
+  }): JSX.Element => (
     <div data-testid="headers-editor">
       {headers.map((header, index) => (
         <div key={index}>
@@ -112,7 +107,7 @@ vi.mock('@/components/BodyEditor/BodyEditor', () => ({
     value: string;
     onChange?: (value: string) => void;
     readOnly?: boolean;
-  }) => (
+  }): JSX.Element => (
     <div
       data-testid={readOnly ? 'response-body-editor' : 'request-body-editor'}
     >
@@ -130,7 +125,7 @@ vi.mock('@/components/BodyEditor/BodyEditor', () => ({
 }));
 
 vi.mock('@/components/CodeGenerator/CodeGenerator', () => ({
-  default: () => <div data-testid="code-generator" />,
+  default: (): JSX.Element => <div data-testid="code-generator" />,
 }));
 
 describe('RestClient', () => {
@@ -233,7 +228,7 @@ describe('RestClient', () => {
     const mockResponse = {
       ok: true,
       status: 200,
-      text: () => Promise.resolve('{"data":"test"}'),
+      text: (): Promise<string> => Promise.resolve('{"data":"test"}'),
     };
     global.fetch = vi.fn().mockResolvedValue(mockResponse);
 

@@ -8,7 +8,7 @@ interface CodeTemplateParams {
 }
 
 export const codeTemplates = {
-  curl: ({ method, url, headers, body }: CodeTemplateParams) => {
+  curl: ({ method, url, headers, body }: CodeTemplateParams): string => {
     const headerLines = headers
       .map(({ key, value }) => `  -H "${key}: ${value}"`)
       .join(' \\\n');
@@ -16,7 +16,7 @@ export const codeTemplates = {
     return `curl -X ${method} "${url}" \\\n${headerLines}${bodyLine}`;
   },
 
-  javascript: ({ method, url, headers, body }: CodeTemplateParams) => {
+  javascript: ({ method, url, headers, body }: CodeTemplateParams): string => {
     const headerLines = headers
       .map(({ key, value }) => `    "${key}": "${value}"`)
       .join(',\n');
@@ -32,7 +32,7 @@ ${headerLines}
   .catch(error => console.error(error));`;
   },
 
-  xhr: ({ method, url, headers, body }: CodeTemplateParams) => {
+  xhr: ({ method, url, headers, body }: CodeTemplateParams): string => {
     const headerLines = headers
       .map(({ key, value }) => `xhr.setRequestHeader("${key}", "${value}");`)
       .join('\n');
@@ -52,7 +52,7 @@ xhr.onerror = function() {
 ${body ? `xhr.send(${body});` : 'xhr.send();'}`;
   },
 
-  nodejs: ({ method, url, headers, body }: CodeTemplateParams) => {
+  nodejs: ({ method, url, headers, body }: CodeTemplateParams): string => {
     const headerLines = headers
       .map(({ key, value }) => `    "${key}": "${value}"`)
       .join(',\n');
@@ -83,7 +83,7 @@ ${body ? `req.write(${body});` : ''}
 req.end();`;
   },
 
-  python: ({ method, url, headers, body }: CodeTemplateParams) => {
+  python: ({ method, url, headers, body }: CodeTemplateParams): string => {
     const headerLines = headers
       .map(({ key, value }) => `    "${key}": "${value}"`)
       .join(',\n');
@@ -97,7 +97,7 @@ response = requests.${method.toLowerCase()}("${url}", headers=headers${body ? `,
 print(response.json())`;
   },
 
-  java: ({ method, url, headers, body }: CodeTemplateParams) => {
+  java: ({ method, url, headers, body }: CodeTemplateParams): string => {
     const headerLines = headers
       .map(
         ({ key, value }) =>
@@ -125,7 +125,7 @@ ${headerLines}
 }`;
   },
 
-  csharp: ({ method, url, headers, body }: CodeTemplateParams) => {
+  csharp: ({ method, url, headers, body }: CodeTemplateParams): string => {
     const headerLines = headers
       .map(
         ({ key, value }) =>
@@ -148,7 +148,7 @@ ${headerLines}
 }`;
   },
 
-  go: ({ method, url, headers, body }: CodeTemplateParams) => {
+  go: ({ method, url, headers, body }: CodeTemplateParams): string => {
     const headerLines = headers
       .map(({ key, value }) => `    req.Header.Add("${key}", "${value}")`)
       .join('\n');

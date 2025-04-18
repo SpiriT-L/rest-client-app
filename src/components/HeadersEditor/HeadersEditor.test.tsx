@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { useTranslations } from 'next-intl';
 import HeadersEditor from './HeadersEditor';
 
-// Mock the translations
 vi.mock('next-intl', () => ({
   useTranslations: vi.fn(),
 }));
@@ -16,9 +15,8 @@ describe('HeadersEditor', () => {
   ];
 
   beforeEach(() => {
-    // Reset mocks before each test
     mockOnChange.mockClear();
-    (useTranslations as any).mockReturnValue((key: string) => {
+    useTranslations.mockReturnValue((key: string) => {
       const translations: Record<string, string> = {
         header_name: 'Header Name',
         header_value: 'Header Value',
@@ -34,7 +32,6 @@ describe('HeadersEditor', () => {
   it('renders existing headers', () => {
     render(<HeadersEditor headers={initialHeaders} onChange={mockOnChange} />);
 
-    // Check if existing headers are rendered
     expect(screen.getByDisplayValue('Content-Type')).toBeInTheDocument();
     expect(screen.getByDisplayValue('application/json')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Authorization')).toBeInTheDocument();
@@ -44,7 +41,6 @@ describe('HeadersEditor', () => {
   it('allows adding a new header', () => {
     render(<HeadersEditor headers={initialHeaders} onChange={mockOnChange} />);
 
-    // Fill in new header fields
     const keyInput = screen.getByPlaceholderText('New Header Key');
     const valueInput = screen.getByPlaceholderText('New Header Value');
     const addButton = screen.getByText('Add Header');
@@ -53,7 +49,6 @@ describe('HeadersEditor', () => {
     fireEvent.change(valueInput, { target: { value: 'custom-value' } });
     fireEvent.click(addButton);
 
-    // Check if onChange was called with the new header
     expect(mockOnChange).toHaveBeenCalledWith([
       ...initialHeaders,
       { key: 'X-Custom-Header', value: 'custom-value' },
@@ -73,7 +68,7 @@ describe('HeadersEditor', () => {
     render(<HeadersEditor headers={initialHeaders} onChange={mockOnChange} />);
 
     const removeButtons = screen.getAllByText('Remove');
-    fireEvent.click(removeButtons[0]); // Remove first header
+    fireEvent.click(removeButtons[0]);
 
     expect(mockOnChange).toHaveBeenCalledWith([
       { key: 'Authorization', value: 'Bearer token' },
@@ -105,7 +100,6 @@ describe('HeadersEditor', () => {
     fireEvent.change(valueInput, { target: { value: 'custom-value' } });
     fireEvent.click(addButton);
 
-    // Check if inputs are cleared
     expect(keyInput).toHaveValue('');
     expect(valueInput).toHaveValue('');
   });

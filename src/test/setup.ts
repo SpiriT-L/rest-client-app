@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom';
+import { Router } from 'next/router';
 import { vi } from 'vitest';
-
 vi.mock('next-intl', () => ({
   useTranslations: vi.fn(),
 }));
 
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({
+  useRouter: (): Router => ({
     push: vi.fn(),
     replace: vi.fn(),
     prefetch: vi.fn(),
@@ -14,8 +14,8 @@ vi.mock('next/navigation', () => ({
     forward: vi.fn(),
     refresh: vi.fn(),
   }),
-  useSearchParams: () => new URLSearchParams(),
-  usePathname: () => '/',
+  useSearchParams: (): URLSearchParams => new URLSearchParams(),
+  usePathname: (): string => '/',
 }));
 
 Object.defineProperty(window, 'btoa', {
@@ -42,12 +42,4 @@ Object.defineProperty(window, 'matchMedia', {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
-});
-
-beforeEach(() => {
-  console.log('Test setup: beforeEach');
-});
-
-afterEach(() => {
-  console.log('Test setup: afterEach');
 });

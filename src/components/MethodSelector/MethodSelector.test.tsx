@@ -45,7 +45,7 @@ describe('MethodSelector', () => {
 
   it('maintains selected value after change', () => {
     let currentValue: HttpMethod = initialMethod;
-    const handleChange = (newValue: HttpMethod) => {
+    const handleChange = (newValue: HttpMethod): void => {
       currentValue = newValue;
     };
 
@@ -56,10 +56,7 @@ describe('MethodSelector', () => {
     const select = screen.getByRole('combobox');
     fireEvent.change(select, { target: { value: 'POST' } });
 
-    // Re-render with the new value
     rerender(<MethodSelector value={currentValue} onChange={handleChange} />);
-
-    // The value should be updated in the DOM
     expect(select).toHaveValue('POST');
   });
 

@@ -12,7 +12,7 @@ describe('BodyEditor', () => {
 
   beforeEach(() => {
     mockOnChange.mockClear();
-    (useTranslations as any).mockReturnValue((key: string) => {
+    useTranslations.mockReturnValue((key: string) => {
       const translations: Record<string, string> = {
         title_view: 'Response Body',
         title_edit: 'Request Body',

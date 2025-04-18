@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, JSX } from 'react';
 import { RestClientState } from '@/models/rest-client';
 import { useVariables } from '@/components/Variables/useVariables';
 import { generateCode } from '@/utils/codeGenerator';
@@ -22,12 +22,14 @@ const LANGUAGES = [
   { name: 'go', label: 'Go' },
 ];
 
-export default function CodeGenerator({ state }: CodeGeneratorProps) {
+export default function CodeGenerator({
+  state,
+}: CodeGeneratorProps): JSX.Element {
   const [selectedLanguage, setSelectedLanguage] = useState('curl');
   const [variables] = useVariables();
   const t = useTranslations('CodeGenerator');
 
-  const getGeneratedCode = () => {
+  const getGeneratedCode = (): string => {
     try {
       return generateCode(state, variables, selectedLanguage);
     } catch (error) {

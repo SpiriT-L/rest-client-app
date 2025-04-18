@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, JSX } from 'react';
 import styles from './BodyEditor.module.scss';
 import { useTranslations } from 'next-intl';
 
@@ -16,7 +16,7 @@ export default function BodyEditor({
   onChange,
   readOnly = false,
   title = 'Request Body',
-}: BodyEditorProps) {
+}: BodyEditorProps): JSX.Element {
   const [localValue, setLocalValue] = useState(value);
   const [formatError, setFormatError] = useState<string | null>(null);
   const [isJson, setIsJson] = useState(false);
@@ -37,7 +37,7 @@ export default function BodyEditor({
     }
   }, [value, readOnly]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
     if (readOnly) return;
     const newValue = e.target.value;
     setLocalValue(newValue);
@@ -53,7 +53,7 @@ export default function BodyEditor({
     }
   };
 
-  const handleFormat = () => {
+  const handleFormat = (): void => {
     if (!isJson) return;
 
     try {
@@ -63,6 +63,7 @@ export default function BodyEditor({
       onChange?.(formatted);
       setFormatError(null);
     } catch (error) {
+      console.error(error);
       setFormatError(t('format_error'));
     }
   };

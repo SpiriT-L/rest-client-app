@@ -4,13 +4,11 @@ import { RequestModel } from '@/models/request.model';
 
 describe('buildRequestRoute', () => {
   beforeEach(() => {
-    // Mock btoa to make tests deterministic
-    global.btoa = (str: string) => `base64:${str}`;
+    global.btoa = (str: string): string => `base64:${str}`;
   });
 
   afterEach(() => {
-    // Restore original btoa
-    delete (global as any).btoa;
+    delete global.btoa;
   });
 
   it('builds route for GET request with only method and URL', () => {

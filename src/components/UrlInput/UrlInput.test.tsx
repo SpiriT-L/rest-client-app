@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { useTranslations } from 'next-intl';
 import UrlInput from './UrlInput';
 
-// Mock the translations
 vi.mock('next-intl', () => ({
   useTranslations: vi.fn(),
 }));
@@ -13,9 +12,8 @@ describe('UrlInput', () => {
   const initialUrl = 'https://api.example.com';
 
   beforeEach(() => {
-    // Reset mocks before each test
     mockOnChange.mockClear();
-    (useTranslations as any).mockReturnValue((key: string) => {
+    useTranslations.mockReturnValue((key: string) => {
       const translations: Record<string, string> = {
         placeholder: 'Enter URL...',
       };

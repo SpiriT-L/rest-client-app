@@ -1,5 +1,5 @@
 'use client';
-
+import { JSX } from 'react';
 type HttpMethod =
   | 'GET'
   | 'POST'
@@ -28,7 +28,7 @@ const METHODS: HttpMethod[] = [
 export default function MethodSelector({
   value,
   onChange,
-}: MethodSelectorProps) {
+}: MethodSelectorProps): JSX.Element {
   return (
     <select
       value={value}
