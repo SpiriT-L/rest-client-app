@@ -35,12 +35,10 @@ const prepareBodyForLanguage = (body: string, language: string): string => {
 
   const formattedBody = formatJson(body);
 
-  // For curl, we want the raw JSON without escaping quotes
   if (language === 'curl') {
     return formattedBody;
   }
 
-  // For other languages, we want the raw JSON as well
   return formattedBody;
 };
 
@@ -51,7 +49,6 @@ export const generateCode = (
 ): string => {
   const { method, url, headers, body } = state;
 
-  // Substitute variables
   const substitutedUrl = substituteVariables(url, variables);
   const substitutedHeaders = headers.map(header => ({
     ...header,
@@ -59,12 +56,10 @@ export const generateCode = (
   }));
   const substitutedBody = body ? substituteVariables(body, variables) : '';
 
-  // Validate JSON body if present
   if (substitutedBody && !validateJson(substitutedBody)) {
     throw new Error('Invalid JSON in request body');
   }
 
-  // Escape strings
   const escapedUrl = escapeString(substitutedUrl);
   const escapedHeaders = substitutedHeaders.map(header => ({
     key: escapeString(header.key),
@@ -72,13 +67,11 @@ export const generateCode = (
   }));
   const preparedBody = prepareBodyForLanguage(substitutedBody, language);
 
-  // Get template function
   const template = codeTemplates[language as keyof typeof codeTemplates];
   if (!template) {
     throw new Error(`Unsupported language: ${language}`);
   }
 
-  // Generate code
   return template({
     method,
     url: escapedUrl,
