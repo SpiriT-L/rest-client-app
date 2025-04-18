@@ -37,5 +37,37 @@
     "empty": "Здесь пусто.",
     "options": "Попробуйте ",
     "link": "REST-клиент"
+  },
+  "BodyEditor": {
+    "title_edit": "Тело запроса",
+    "title_view": "Тело ответа",
+    "format_json": "Форматировать JSON",
+    "format_error": "Неверный формат JSON",
+    "format_placeholder_edit": "Введите тело запроса (JSON или простой текст)",
+    "format_placeholder_view": "Тело ответа"
+  },
+  "HeadersEditor": {
+    "add_header": "Добавить заголовок",
+    "remove_header": "Удалить заголовок",
+    "new_header_key": "Новый ключ заголовка",
+    "new_header_value": "Новое значение заголовка",
+    "header_name": "Имя заголовка",
+    "header_value": "Значение заголовка"
+  },
+  "CodeGenerator": {
+    "title": "Генератор кода"
+  },
+  "RestClient": {
+    "send_request": "Отправить запрос",
+    "response_status": "Статус ответа",
+    "response_body": "Тело ответа",
+    "response_headers": "Заголовки ответа",
+    "response_time": "Время ответа",
+    "response_error": "Ошибка ответа",
+    "response_error_message": "Не удалось отправить запрос",
+    "request_body": "Тело запроса"
+  },
+  "UrlInput": {
+    "placeholder": "Введите URL"
   }
 }

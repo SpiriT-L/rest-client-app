@@ -14,6 +14,7 @@ export default defineConfig({
       include: ['src/**/*.{ts,tsx}'],
       exclude: ['node_modules', 'dist', 'test', 'src/utils/**/*'],
     },
+    setupFiles: ['./src/test/setup.ts'],
   },
   resolve: {
     alias: {

@@ -1,0 +1,61 @@
+@use '@/styles/variables' as *;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  height: 100%;
+  border-radius: 5px;
+}
+
+.clientSection {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.requestControls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.responseSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status {
+  @include body-font(14px);
+  color: $color-primary;
+}
+
+.statusCode {
+  font-weight: 600;
+  color: $color-link;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  background-color: transparent;
+  color: $color-link;
+  border: 1px solid $color-primary;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+
+  &:hover {
+    color: $color-link-hover;
+    border-color: $color-link-hover;
+  }
+
+  &:disabled {
+    background-color: $color-secondary;
+    cursor: not-allowed;
+    border-color: $color-secondary;
+  }
+}
