@@ -6,29 +6,26 @@ import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
 
-// Mock Firebase config
 vi.mock('@/firebase/config', () => ({
   auth: {},
 }));
 
-// Mock next-intl
 vi.mock('next-intl', () => ({
   useTranslations: vi.fn(),
 }));
 
-// Mock react-firebase-hooks/auth
 vi.mock('react-firebase-hooks/auth', () => ({
   useSignInWithEmailAndPassword: vi.fn(),
 }));
 
-// Mock next/navigation
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
 }));
 
-// Mock validation schema
 vi.mock('@/utils/validationSchema', () => ({
-  getLoginValidationSchema: (t: (key: string) => string) =>
+  getLoginValidationSchema: (
+    t: (key: string) => string
+  ): Yup.ObjectSchema<object> =>
     Yup.object({
       email: Yup.string()
         .email(t('validation.email.invalid'))
@@ -91,25 +88,22 @@ describe('LoginPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    // Setup translation mock
-    (useTranslations as any).mockReturnValue((key: string) => {
+    useTranslations.mockReturnValue((key: string) => {
       const keys = key.split('.');
-      let value: any = mockTranslations;
+      let value = mockTranslations;
       for (const k of keys) {
         value = value[k];
       }
       return value;
     });
 
-    // Setup router mock
-    (useRouter as any).mockReturnValue(mockRouter);
+    useRouter.mockReturnValue(mockRouter);
 
-    // Setup auth mock with initial state (not signed in)
-    (useSignInWithEmailAndPassword as any).mockReturnValue([
+    useSignInWithEmailAndPassword.mockReturnValue([
       mockSignIn,
-      null, // userCredential
-      false, // loading
-      null, // error
+      null,
+      false,
+      null,
     ]);
   });
 
@@ -129,7 +123,6 @@ describe('LoginPage', () => {
     const emailInput = screen.getByPlaceholderText('Email');
     const passwordInput = screen.getByPlaceholderText('Password');
 
-    // Clear fields and trigger validation
     fireEvent.change(emailInput, { target: { value: '' } });
     fireEvent.change(passwordInput, { target: { value: '' } });
     fireEvent.blur(emailInput);
@@ -193,17 +186,15 @@ describe('LoginPage', () => {
   });
 
   it('shows firebase error message', async () => {
-    // Setup auth mock with error state
-    (useSignInWithEmailAndPassword as any).mockReturnValue([
+    useSignInWithEmailAndPassword.mockReturnValue([
       mockSignIn,
-      null, // userCredential
-      false, // loading
-      { message: 'Invalid credentials' }, // error
+      null,
+      false,
+      { message: 'Invalid credentials' },
     ]);
 
     render(<LoginPage />);
 
-    // Fill in the form with valid data
     const emailInput = screen.getByPlaceholderText('Email');
     const passwordInput = screen.getByPlaceholderText('Password');
 
@@ -211,7 +202,6 @@ describe('LoginPage', () => {
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
     fireEvent.blur(emailInput);
 
-    // Submit the form
     const submitButton = screen.getByText('Sign In');
     fireEvent.click(submitButton);
 
@@ -222,12 +212,11 @@ describe('LoginPage', () => {
   });
 
   it('redirects to home page on successful login', async () => {
-    // Setup auth mock with successful login
-    (useSignInWithEmailAndPassword as any).mockReturnValue([
+    useSignInWithEmailAndPassword.mockReturnValue([
       mockSignIn,
-      { user: { uid: '123' } }, // userCredential
-      false, // loading
-      null, // error
+      { user: { uid: '123' } },
+      false,
+      null,
     ]);
 
     render(<LoginPage />);
@@ -238,12 +227,11 @@ describe('LoginPage', () => {
   });
 
   it('disables submit button while loading', () => {
-    // Setup auth mock with loading state
-    (useSignInWithEmailAndPassword as any).mockReturnValue([
+    useSignInWithEmailAndPassword.mockReturnValue([
       mockSignIn,
-      null, // userCredential
-      true, // loading
-      null, // error
+      null,
+      true,
+      null,
     ]);
 
     render(<LoginPage />);

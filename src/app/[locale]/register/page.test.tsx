@@ -12,7 +12,7 @@ vi.mock('firebase/auth', () => ({
 }));
 
 vi.mock('next-intl', () => ({
-  useTranslations: vi.fn(() => (key: string) => key),
+  useTranslations: vi.fn((): ((key: string) => string) => (key: string) => key),
 }));
 
 vi.mock('react-firebase-hooks/auth', () => ({
@@ -44,7 +44,7 @@ const mockHandleSubmit = vi.fn(e => {
   return mockFormikValues;
 });
 
-const createMockFormikBag = (overrides = {}) => ({
+const createMockFormikBag = (overrides = {}): ReturnType<typeof useFormik> => ({
   initialValues: mockFormikValues,
   initialErrors: {},
   initialTouched: {},

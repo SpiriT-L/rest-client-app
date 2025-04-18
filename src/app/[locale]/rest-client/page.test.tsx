@@ -1,16 +1,16 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import '@testing-library/jest-dom';
 import RestClientPage from './page';
 
 vi.mock('@/components/RestClient/RestClient', () => ({
-  default: () => <div>Mocked RestClient Component</div>,
+  default: (): JSX.Element => <div>Mocked RestClient Component</div>,
 }));
 
 vi.mock('@/hocs/authCheck', () => ({
-  authCheck: (Component: React.ComponentType) => {
-    const WrappedComponent = () => (
+  authCheck: (Component: React.ComponentType): React.ComponentType => {
+    const WrappedComponent = (): JSX.Element => (
       <div data-testid="authenticated">
         <Component />
       </div>
