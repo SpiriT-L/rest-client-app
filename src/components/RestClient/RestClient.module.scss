@@ -17,8 +17,7 @@
 
 .requestControls {
   display: flex;
-  gap: 20px;
-  align-items: center;
+  gap: 10px;
 }
 
 .responseSection {
@@ -54,7 +53,7 @@
   }
 
   &:disabled {
-    background-color: $color-secondary;
+    color: $color-secondary;
     cursor: not-allowed;
     border-color: $color-secondary;
   }

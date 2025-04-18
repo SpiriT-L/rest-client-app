@@ -1,14 +1,18 @@
+@use '@/styles/variables' as *;
+
 .input {
   flex: 1;
   padding: 0.5rem;
-  border: 1px solid #ccc;
+  border: 1px solid $color-primary;
   border-radius: 4px;
   font-size: 1rem;
   min-width: 300px;
-}
+  background-color: $color-background-primary;
+  color: $color-white;
 
-.input:focus {
-  outline: none;
-  border-color: #0070f3;
-  box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.1);
+  &:focus {
+    outline: none;
+    border-color: $color-link;
+    box-shadow: 0 0 0 2px rgba(255, 255, 224, 0.1);
+  }
 }

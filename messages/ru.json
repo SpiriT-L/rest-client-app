@@ -97,7 +97,8 @@
     "header_value": "Значение заголовка"
   },
   "CodeGenerator": {
-    "title": "Генератор кода"
+    "title": "Генератор кода",
+    "error": "Ошибка генерации кода"
   },
   "RestClient": {
     "send_request": "Отправить запрос",

@@ -95,7 +95,8 @@
     "header_value": "Header value"
   },
   "CodeGenerator": {
-    "title": "Code generator"
+    "title": "Code generator",
+    "error": "Error generating code"
   },
   "RestClient": {
     "send_request": "Send request",

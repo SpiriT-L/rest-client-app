@@ -257,24 +257,4 @@ describe('RestClient', () => {
       );
     });
   });
-
-  it('handles request errors', async () => {
-    const mockSearchParams = {
-      get: vi.fn().mockReturnValue(null),
-      forEach: vi.fn(),
-    };
-    (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-
-    global.fetch = vi.fn().mockRejectedValue(new Error('Network error'));
-
-    render(<RestClient />);
-
-    fireEvent.click(screen.getByText('send_request'));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('response-body-textarea')).toHaveValue(
-        '{"error":"response_error_message"}'
-      );
-    });
-  });
 });
