@@ -31,8 +31,8 @@ describe('RestClient', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    useVariables.mockReturnValue([mockVariables]);
-    useHistory.mockReturnValue({
+    (useVariables as ReturnType<typeof vi.fn>).mockReturnValue([mockVariables]);
+    (useHistory as ReturnType<typeof vi.fn>).mockReturnValue({
       addRequestToHistory: mockAddToHistory,
     });
     global.fetch = vi.fn();

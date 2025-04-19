@@ -91,23 +91,24 @@ describe('LoginPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    useTranslations.mockReturnValue((key: string) => {
-      const keys = key.split('.');
-      let value = mockTranslations;
-      for (const k of keys) {
-        value = value[k];
+    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
+      (key: string) => {
+        const keys = key.split('.');
+        let value: TranslationType = mockTranslations;
+        for (const k of keys) {
+          value = value[
+            k as keyof TranslationType
+          ] as unknown as TranslationType;
+        }
+        return value as unknown as string;
       }
-      return value;
-    });
+    );
 
-    useRouter.mockReturnValue(mockRouter);
+    (useRouter as ReturnType<typeof vi.fn>).mockReturnValue(mockRouter);
 
-    useSignInWithEmailAndPassword.mockReturnValue([
-      mockSignIn,
-      null,
-      false,
-      null,
-    ]);
+    (useSignInWithEmailAndPassword as ReturnType<typeof vi.fn>).mockReturnValue(
+      [mockSignIn, null, false, null]
+    );
   });
 
   it('renders login form with all fields', () => {
@@ -189,12 +190,9 @@ describe('LoginPage', () => {
   });
 
   it('shows firebase error message', async () => {
-    useSignInWithEmailAndPassword.mockReturnValue([
-      mockSignIn,
-      null,
-      false,
-      { message: 'Invalid credentials' },
-    ]);
+    (useSignInWithEmailAndPassword as ReturnType<typeof vi.fn>).mockReturnValue(
+      [mockSignIn, null, false, { message: 'Invalid credentials' }]
+    );
 
     render(<LoginPage />);
 
@@ -215,12 +213,9 @@ describe('LoginPage', () => {
   });
 
   it('redirects to home page on successful login', async () => {
-    useSignInWithEmailAndPassword.mockReturnValue([
-      mockSignIn,
-      { user: { uid: '123' } },
-      false,
-      null,
-    ]);
+    (useSignInWithEmailAndPassword as ReturnType<typeof vi.fn>).mockReturnValue(
+      [mockSignIn, { user: { uid: '123' } }, false, null]
+    );
 
     render(<LoginPage />);
 
@@ -230,12 +225,9 @@ describe('LoginPage', () => {
   });
 
   it('disables submit button while loading', () => {
-    useSignInWithEmailAndPassword.mockReturnValue([
-      mockSignIn,
-      null,
-      true,
-      null,
-    ]);
+    (useSignInWithEmailAndPassword as ReturnType<typeof vi.fn>).mockReturnValue(
+      [mockSignIn, null, true, null]
+    );
 
     render(<LoginPage />);
 

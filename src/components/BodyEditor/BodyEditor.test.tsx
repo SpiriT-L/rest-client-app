@@ -12,17 +12,19 @@ describe('BodyEditor', () => {
 
   beforeEach(() => {
     mockOnChange.mockClear();
-    useTranslations.mockReturnValue((key: string) => {
-      const translations: Record<string, string> = {
-        title_view: 'Response Body',
-        title_edit: 'Request Body',
-        format_json: 'Format JSON',
-        format_error: 'Invalid JSON format',
-        format_placeholder_view: 'View response body...',
-        format_placeholder_edit: 'Enter request body...',
-      };
-      return translations[key] || key;
-    });
+    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
+      (key: string) => {
+        const translations: Record<string, string> = {
+          title_view: 'Response Body',
+          title_edit: 'Request Body',
+          format_json: 'Format JSON',
+          format_error: 'Invalid JSON format',
+          format_placeholder_view: 'View response body...',
+          format_placeholder_edit: 'Enter request body...',
+        };
+        return translations[key] || key;
+      }
+    );
   });
 
   it('renders with default title in edit mode', () => {

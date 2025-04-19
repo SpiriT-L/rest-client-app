@@ -17,7 +17,15 @@ vi.mock('@/components/History/useHistory', () => ({
 }));
 
 vi.mock('next/link', () => ({
-  default: ({ children, href, ...props }): React.JSX.Element => (
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }): React.JSX.Element => (
     <a href={href} {...props} data-testid="mocked-link">
       {children}
     </a>
