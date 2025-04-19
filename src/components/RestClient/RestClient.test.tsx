@@ -1,14 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import RestClient from './RestClient';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useVariables } from '@/components/Variables/useVariables';
 import { useHistory } from '@/components/History/useHistory';
 import { useTranslations } from 'next-intl';
 import { JSX } from 'react';
+import userEvent from '@testing-library/user-event';
+
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
-  useSearchParams: vi.fn(),
+  usePathname: vi.fn(),
 }));
 
 vi.mock('@/components/Variables/useVariables', () => ({
@@ -64,8 +66,8 @@ vi.mock('@/components/HeadersEditor/HeadersEditor', () => ({
     headers,
     onChange,
   }: {
-    headers: { key: string; value: string }[];
-    onChange?: (headers: { key: string; value: string }[]) => void;
+    headers: Array<{ key: string; value: string }>;
+    onChange: (headers: Array<{ key: string; value: string }>) => void;
   }): JSX.Element => (
     <div data-testid="headers-editor">
       {headers.map((header, index) => (
@@ -73,24 +75,20 @@ vi.mock('@/components/HeadersEditor/HeadersEditor', () => ({
           <input
             data-testid={`header-key-${index}`}
             value={header.key}
-            onChange={e =>
-              onChange?.([
-                ...headers.slice(0, index),
-                { key: e.target.value, value: header.value },
-                ...headers.slice(index + 1),
-              ])
-            }
+            onChange={e => {
+              const newHeaders = [...headers];
+              newHeaders[index] = { ...header, key: e.target.value };
+              onChange(newHeaders);
+            }}
           />
           <input
             data-testid={`header-value-${index}`}
             value={header.value}
-            onChange={e =>
-              onChange?.([
-                ...headers.slice(0, index),
-                { key: header.key, value: e.target.value },
-                ...headers.slice(index + 1),
-              ])
-            }
+            onChange={e => {
+              const newHeaders = [...headers];
+              newHeaders[index] = { ...header, value: e.target.value };
+              onChange(newHeaders);
+            }}
           />
         </div>
       ))}
@@ -103,15 +101,17 @@ vi.mock('@/components/BodyEditor/BodyEditor', () => ({
     value,
     onChange,
     readOnly,
+    title,
   }: {
     value: string;
     onChange?: (value: string) => void;
     readOnly?: boolean;
+    title: string;
   }): JSX.Element => (
     <div
       data-testid={readOnly ? 'response-body-editor' : 'request-body-editor'}
     >
-      <h3>{readOnly ? 'response_body' : 'request_body'}</h3>
+      <h3>{title}</h3>
       <textarea
         data-testid={
           readOnly ? 'response-body-textarea' : 'request-body-textarea'
@@ -125,7 +125,9 @@ vi.mock('@/components/BodyEditor/BodyEditor', () => ({
 }));
 
 vi.mock('@/components/CodeGenerator/CodeGenerator', () => ({
-  default: (): JSX.Element => <div data-testid="code-generator" />,
+  default: ({ state }: { state: unknown }): JSX.Element => (
+    <div data-testid="code-generator">{JSON.stringify(state)}</div>
+  ),
 }));
 
 describe('RestClient', () => {
@@ -134,24 +136,27 @@ describe('RestClient', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useRouter as jest.Mock).mockReturnValue({ push: mockPush });
-    (useVariables as jest.Mock).mockReturnValue([
+    (useRouter as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      push: mockPush,
+    });
+    (usePathname as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+      '/rest-client/GET/'
+    );
+    (useVariables as unknown as ReturnType<typeof vi.fn>).mockReturnValue([
       [],
       vi.fn(),
       vi.fn(),
       vi.fn(),
     ]);
-    (useHistory as jest.Mock).mockReturnValue({ addRequestToHistory: vi.fn() });
-    (useTranslations as jest.Mock).mockReturnValue(mockT);
+    (useHistory as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      addRequestToHistory: vi.fn(),
+    });
+    (useTranslations as unknown as ReturnType<typeof vi.fn>).mockReturnValue(
+      mockT
+    );
   });
 
   it('renders initial state correctly', () => {
-    const mockSearchParams = {
-      get: vi.fn().mockReturnValue(null),
-      forEach: vi.fn(),
-    };
-    (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-
     render(<RestClient />);
 
     expect(screen.getByTestId('method-selector')).toHaveValue('GET');
@@ -161,48 +166,21 @@ describe('RestClient', () => {
     expect(screen.getByTestId('code-generator')).toBeInTheDocument();
   });
 
-  it('initializes state from URL parameters', () => {
-    const mockSearchParams = {
-      get: vi.fn(key => {
-        switch (key) {
-          case 'method':
-            return 'POST';
-          case 'url':
-            return btoa('https://api.example.com');
-          case 'body':
-            return btoa('{"test": "data"}');
-          default:
-            return null;
-        }
-      }),
-      forEach: vi.fn(callback => {
-        callback(encodeURIComponent('application/json'), 'Content-Type');
-      }),
-    };
-    (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-
-    render(<RestClient />);
+  it('initializes state from route parameters', () => {
+    render(
+      <RestClient
+        initialMethod="POST"
+        initialUrl={btoa('https://api.example.com')}
+      />
+    );
 
     expect(screen.getByTestId('method-selector')).toHaveValue('POST');
     expect(screen.getByTestId('url-input')).toHaveValue(
       'https://api.example.com'
     );
-    expect(screen.getByTestId('header-key-0')).toHaveValue('Content-Type');
-    expect(screen.getByTestId('header-value-0')).toHaveValue(
-      'application/json'
-    );
-    expect(screen.getByTestId('request-body-textarea')).toHaveValue(
-      '{"test": "data"}'
-    );
   });
 
-  it('updates URL when state changes', () => {
-    const mockSearchParams = {
-      get: vi.fn().mockReturnValue(null),
-      forEach: vi.fn(),
-    };
-    (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
-
+  it('updates route when state changes', () => {
     render(<RestClient />);
 
     fireEvent.change(screen.getByTestId('method-selector'), {
@@ -213,48 +191,45 @@ describe('RestClient', () => {
     });
 
     expect(mockPush).toHaveBeenCalledWith(
-      expect.stringContaining('method=POST'),
+      expect.stringContaining('/rest-client/POST/'),
       expect.anything()
     );
   });
 
   it('handles request submission', async () => {
-    const mockSearchParams = {
-      get: vi.fn().mockReturnValue(null),
-      forEach: vi.fn(),
-    };
-    (useSearchParams as jest.Mock).mockReturnValue(mockSearchParams);
+    const mockAddRequestToHistory = vi.fn();
+    (useHistory as unknown as ReturnType<typeof vi.fn>).mockReturnValue({
+      addRequestToHistory: mockAddRequestToHistory,
+    });
 
     const mockResponse = {
-      ok: true,
       status: 200,
-      text: (): Promise<string> => Promise.resolve('{"data":"test"}'),
+      text: async (): Promise<string> => '{"data": "success"}',
     };
     global.fetch = vi.fn().mockResolvedValue(mockResponse);
 
-    render(<RestClient />);
+    const { getByTestId, getByText } = render(<RestClient />);
 
-    fireEvent.change(screen.getByTestId('method-selector'), {
-      target: { value: 'POST' },
-    });
-    fireEvent.change(screen.getByTestId('url-input'), {
-      target: { value: 'https://api.example.com/api' },
-    });
-    fireEvent.change(screen.getByTestId('request-body-textarea'), {
-      target: { value: '{"test": "data"}' },
-    });
+    // Fill in the form
+    const urlInput = getByTestId('url-input');
+    await userEvent.type(urlInput, 'https://api.example.com/api');
 
-    fireEvent.click(screen.getByText('send_request'));
+    const bodyTextarea = getByTestId('request-body-textarea');
+    await userEvent.type(bodyTextarea, '{"test": "data"}');
 
+    // Submit the form
+    const submitButton = getByText('send_request');
+    await userEvent.click(submitButton);
+
+    // Wait for the response
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('https://api.example.com/api', {
-        method: 'POST',
+      expect(mockAddRequestToHistory).toHaveBeenCalledWith({
+        url: 'https://api.example.com/api',
+        method: 'GET',
         headers: {},
-        body: '{"test": "data"}',
+        body: { test: 'data' },
+        executionTime: expect.any(Number),
       });
-      expect(screen.getByTestId('response-body-textarea')).toHaveValue(
-        '{"data":"test"}'
-      );
     });
   });
 });

@@ -8,17 +8,14 @@ import { useTranslations } from 'next-intl';
 import { buildRequestRoute } from '@/utils/buildRequestRoute';
 import { RequestModel } from '@/models/request.model';
 
-// Mock next-intl
 vi.mock('next-intl', () => ({
   useTranslations: vi.fn(),
 }));
 
-// Mock useHistory
 vi.mock('@/components/History/useHistory', () => ({
   useHistory: vi.fn(),
 }));
 
-// Mock next/link
 vi.mock('next/link', () => ({
   default: ({ children, href, ...props }): React.JSX.Element => (
     <a href={href} {...props} data-testid="mocked-link">
@@ -27,7 +24,6 @@ vi.mock('next/link', () => ({
   ),
 }));
 
-// Mock buildRequestRoute
 vi.mock('@/utils/buildRequestRoute', () => ({
   buildRequestRoute: vi.fn(),
 }));
@@ -58,11 +54,9 @@ describe('History Component', () => {
 
   beforeEach(() => {
     vi.restoreAllMocks();
-    // Mock useTranslations
     (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
       (key: keyof typeof mockTranslations) => mockTranslations[key]
     );
-    // Mock useHistory
     (useHistory as ReturnType<typeof vi.fn>).mockReturnValue({
       history: null,
       addRequestToHistory: vi.fn(),

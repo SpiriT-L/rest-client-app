@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef, JSX } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { RestClientState, HttpMethod, Header } from '@/models/rest-client';
 import { useVariables } from '@/components/Variables/useVariables';
 import { useHistory } from '@/components/History/useHistory';
@@ -13,6 +12,7 @@ import BodyEditor from '../BodyEditor/BodyEditor';
 import CodeGenerator from '../CodeGenerator/CodeGenerator';
 import styles from './RestClient.module.scss';
 import { useTranslations } from 'next-intl';
+
 const DEFAULT_STATE: RestClientState = {
   method: 'GET',
   url: '',
@@ -26,17 +26,29 @@ const DEFAULT_STATE: RestClientState = {
 
 const safeBtoa = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  return btoa(str);
+  // Convert to base64 and make it URL-safe
+  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 };
 
 const safeAtob = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  return atob(str);
+  // Add padding if needed and convert from URL-safe base64
+  const padded = str + '='.repeat((4 - (str.length % 4)) % 4);
+  return atob(padded.replace(/-/g, '+').replace(/_/g, '/'));
 };
 
-export default function RestClient(): JSX.Element | null {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+export interface RestClientProps {
+  initialMethod?: string;
+  initialUrl?: string;
+  initialBody?: string;
+  initialHeaders?: Header[];
+}
+
+export default function RestClient({
+  initialMethod,
+  initialUrl,
+  initialBody,
+}: RestClientProps): JSX.Element | null {
   const [state, setState] = useState<RestClientState>(DEFAULT_STATE);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -44,62 +56,71 @@ export default function RestClient(): JSX.Element | null {
   const [variables] = useVariables();
   const { addRequestToHistory } = useHistory();
   const t = useTranslations('RestClient');
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   useEffect(() => {
-    if (!isInitialized && isClient) {
-      const method = (searchParams.get('method') as HttpMethod) || 'GET';
-      const urlParam = searchParams.get('url');
-      const bodyParam = searchParams.get('body');
-      const url = urlParam ? safeAtob(urlParam) : '';
-      const body = bodyParam ? safeAtob(bodyParam) : '';
+    if (pendingUrlUpdate.current && isClient) {
+      const newState = pendingUrlUpdate.current;
 
+      // Substitute variables in URL, body, and headers
+      const substitutedUrl = substituteVariables(newState.url, variables);
+      const substitutedBody = substituteVariables(newState.body, variables);
+      const substitutedHeaders = newState.headers.map(header => ({
+        ...header,
+        value: substituteVariables(header.value, variables),
+      }));
+
+      const encodedUrl = safeBtoa(substitutedUrl);
+
+      // Create query parameters for headers with substituted values
+      const headerParams = substitutedHeaders.reduce((params, header) => {
+        if (header.key && header.value) {
+          params.append(header.key, header.value);
+        }
+        return params;
+      }, new URLSearchParams());
+
+      const queryString = headerParams.toString();
+      const encodedBody = substitutedBody
+        ? `/${safeBtoa(substitutedBody)}`
+        : '';
+      const newPath = `/rest-client/${newState.method}/${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
+
+      // Update URL without page reload
+      window.history.pushState({}, '', newPath);
+      pendingUrlUpdate.current = null;
+    }
+  }, [state, isClient, variables]);
+
+  useEffect(() => {
+    if (!isInitialized && isClient) {
+      const method = (initialMethod as HttpMethod) || 'GET';
+      const url = initialUrl ? safeAtob(initialUrl) : '';
+      const body = initialBody ? safeAtob(initialBody) : '';
+
+      // Parse headers from URL query parameters
+      const searchParams = new URLSearchParams(window.location.search);
       const headers: Header[] = [];
       searchParams.forEach((value, key) => {
-        if (key !== 'method' && key !== 'url' && key !== 'body') {
-          headers.push({ key, value: decodeURIComponent(value) });
+        // Skip the body parameter if it exists in query params
+        if (key !== 'body') {
+          headers.push({ key, value });
         }
       });
 
-      setState({
+      setState(prev => ({
+        ...prev,
         method,
         url,
         body,
         headers,
-        response: {
-          status: null,
-          body: '',
-        },
-      });
+      }));
       setIsInitialized(true);
     }
-  }, [searchParams, isInitialized, isClient]);
-
-  useEffect(() => {
-    if (pendingUrlUpdate.current && isClient) {
-      const newState = pendingUrlUpdate.current;
-      const params = new URLSearchParams();
-      params.set('method', newState.method);
-      const substitutedUrl = substituteVariables(newState.url, variables);
-      params.set('url', safeBtoa(substitutedUrl));
-
-      if (newState.body) {
-        const substitutedBody = substituteVariables(newState.body, variables);
-        params.set('body', safeBtoa(substitutedBody));
-      }
-
-      newState.headers.forEach(header => {
-        const substitutedValue = substituteVariables(header.value, variables);
-        params.set(header.key, encodeURIComponent(substitutedValue));
-      });
-
-      const newUrl = `/rest-client?${params.toString()}`;
-      router.push(newUrl, { scroll: false });
-      pendingUrlUpdate.current = null;
-    }
-  }, [state, isClient, router, variables]);
+  }, [initialMethod, initialUrl, initialBody, isInitialized, isClient]);
 
   const handleMethodChange = useCallback((method: HttpMethod) => {
     setState(prev => {
