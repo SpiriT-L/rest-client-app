@@ -27,3 +27,18 @@
     color: $color-button-text;
   }
 }
+.buttonLogin {
+  // background-color: transparent;
+  background-color: red;
+  border: 1px solid $color-primary;
+  cursor: pointer;
+  color: $color-link;
+  transition: color 0.3s ease;
+  padding: 10px;
+  border-radius: 5px;
+
+  &:hover {
+    color: $color-link-hover;
+    border-color: $color-link-hover;
+  }
+}

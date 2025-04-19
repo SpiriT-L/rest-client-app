@@ -30,9 +30,10 @@ main {
 }
 
 footer {
-  width: 100%;
+  width: 99vw;
   height: 50px;
   align-items: center;
+  border-top: 1px solid $color-border-bottom;
 }
 
 a {

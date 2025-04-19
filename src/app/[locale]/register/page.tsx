@@ -10,6 +10,7 @@ import { JSX, useEffect, useState } from 'react';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { guestCheck } from '@/hocs/guestCheck';
 
 const RegisterForm: React.FC = () => {
@@ -112,6 +113,10 @@ const RegisterForm: React.FC = () => {
         >
           {t('buttons.register')}
         </Button>
+        <div className={styles.linkContainer}>
+          {t('account')}
+          <Link href="/login">{t('sign_in')}</Link>
+        </div>
       </form>
       {userCredential && <p className={styles.success}>{t('success')}</p>}
     </div>
