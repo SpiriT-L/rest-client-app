@@ -13,12 +13,14 @@ describe('UrlInput', () => {
 
   beforeEach(() => {
     mockOnChange.mockClear();
-    useTranslations.mockReturnValue((key: string) => {
-      const translations: Record<string, string> = {
-        placeholder: 'Enter URL...',
-      };
-      return translations[key] || key;
-    });
+    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
+      (key: string) => {
+        const translations: Record<string, string> = {
+          placeholder: 'Enter URL...',
+        };
+        return translations[key] || key;
+      }
+    );
   });
 
   it('renders with initial value', () => {

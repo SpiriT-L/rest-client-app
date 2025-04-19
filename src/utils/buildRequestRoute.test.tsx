@@ -1,119 +1,151 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { buildRequestRoute } from './buildRequestRoute';
 import { RequestModel } from '@/models/request.model';
+import { Variable } from '@/models/variable';
+import { substituteVariables } from './variableSubstitution';
+
+vi.mock('./variableSubstitution', () => ({
+  substituteVariables: vi.fn((text: string) => text),
+}));
+
+Object.defineProperty(window, 'btoa', {
+  value: (str: string) =>
+    Buffer.from(str)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, ''),
+  writable: true,
+});
 
 describe('buildRequestRoute', () => {
+  const mockRequest: RequestModel = {
+    method: 'GET',
+    url: 'https://api.example.com',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer token',
+    },
+    body: { test: 'value' },
+  };
+
+  const mockVariables: Variable[] = [
+    { key: 'baseUrl', value: 'https://api.example.com' },
+    { key: 'token', value: 'Bearer token' },
+  ];
+
   beforeEach(() => {
-    global.btoa = (str: string): string => `base64:${str}`;
+    vi.clearAllMocks();
   });
 
-  afterEach(() => {
-    delete global.btoa;
+  it('builds route with method and URL only', () => {
+    const request = { ...mockRequest, headers: undefined, body: undefined };
+    const result = buildRequestRoute(request);
+    const expectedUrl = Buffer.from(request.url)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    expect(result).toBe(`/${request.method}/${expectedUrl}`);
   });
 
-  it('builds route for GET request with only method and URL', () => {
-    const request: RequestModel = {
-      method: 'GET',
-      url: 'https://api.example.com/users',
-    };
+  it('builds route with method, URL and body', () => {
+    const request = { ...mockRequest, headers: undefined };
+    const result = buildRequestRoute(request);
+    const expectedUrl = Buffer.from(request.url)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+    const expectedBody = Buffer.from(JSON.stringify(request.body))
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
 
-    const route = buildRequestRoute(request);
+    expect(result).toBe(`/${request.method}/${expectedUrl}/${expectedBody}`);
+  });
 
-    expect(route).toBe(
-      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers'
+  it('builds route with method, URL and headers', () => {
+    const request = { ...mockRequest, body: undefined };
+    const result = buildRequestRoute(request);
+    const expectedUrl = Buffer.from(request.url)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+    const params = new URLSearchParams();
+    params.append('Content-Type', 'application/json');
+    params.append('Authorization', 'Bearer token');
+
+    expect(result).toBe(
+      `/${request.method}/${expectedUrl}?${params.toString()}`
     );
   });
 
-  it('builds route for POST request with body', () => {
-    const request: RequestModel = {
-      method: 'POST',
-      url: 'https://api.example.com/users',
-      body: { name: 'John', age: '30' },
-    };
+  it('builds route with method, URL, body and headers', () => {
+    const result = buildRequestRoute(mockRequest);
+    const expectedUrl = Buffer.from(mockRequest.url)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+    const expectedBody = Buffer.from(JSON.stringify(mockRequest.body))
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+    const params = new URLSearchParams();
+    params.append('Content-Type', 'application/json');
+    params.append('Authorization', 'Bearer token');
 
-    const route = buildRequestRoute(request);
-
-    expect(route).toBe(
-      '?method=POST&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&body=base64%3A%7B%22name%22%3A%22John%22%2C%22age%22%3A%2230%22%7D'
+    expect(result).toBe(
+      `/${mockRequest.method}/${expectedUrl}/${expectedBody}?${params.toString()}`
     );
   });
 
-  it('builds route for request with headers', () => {
-    const request: RequestModel = {
-      method: 'GET',
-      url: 'https://api.example.com/users',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer token123',
-      },
-    };
+  it('substitutes variables in URL', () => {
+    const request = { ...mockRequest, url: '{{baseUrl}}/endpoint' };
+    buildRequestRoute(request, mockVariables);
 
-    const route = buildRequestRoute(request);
-
-    expect(route).toBe(
-      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&Content-Type=application%252Fjson&Authorization=Bearer%2520token123'
+    expect(substituteVariables).toHaveBeenCalledWith(
+      request.url,
+      mockVariables
     );
   });
 
-  it('builds route for full request with method, URL, body, and headers', () => {
-    const request: RequestModel = {
-      method: 'POST',
-      url: 'https://api.example.com/users',
-      body: { name: 'John', age: '30' },
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer token123',
-      },
-    };
+  it('substitutes variables in body', () => {
+    const request = { ...mockRequest, body: { test: '{{token}}' } };
+    buildRequestRoute(request, mockVariables);
 
-    const route = buildRequestRoute(request);
-
-    expect(route).toBe(
-      '?method=POST&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&body=base64%3A%7B%22name%22%3A%22John%22%2C%22age%22%3A%2230%22%7D&Content-Type=application%252Fjson&Authorization=Bearer%2520token123'
+    expect(substituteVariables).toHaveBeenCalledWith(
+      JSON.stringify(request.body),
+      mockVariables
     );
   });
 
-  it('handles empty body and headers', () => {
-    const request: RequestModel = {
-      method: 'GET',
-      url: 'https://api.example.com/users',
-      body: {},
-      headers: {},
-    };
+  it('substitutes variables in headers', () => {
+    const request = { ...mockRequest, headers: { Authorization: '{{token}}' } };
+    buildRequestRoute(request, mockVariables);
 
-    const route = buildRequestRoute(request);
-
-    expect(route).toBe(
-      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&body=base64%3A%7B%7D'
+    expect(substituteVariables).toHaveBeenCalledWith(
+      '{{token}}',
+      mockVariables
     );
   });
 
-  it('handles special characters in URL', () => {
-    const request: RequestModel = {
-      method: 'GET',
-      url: 'https://api.example.com/users?name=John Doe&age=30',
-    };
+  it('handles empty headers', () => {
+    const request = { ...mockRequest, headers: {} };
+    const result = buildRequestRoute(request);
 
-    const route = buildRequestRoute(request);
-
-    expect(route).toBe(
-      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers%3Fname%3DJohn+Doe%26age%3D30'
-    );
+    expect(result).not.toContain('?');
   });
 
-  it('handles special characters in headers', () => {
-    const request: RequestModel = {
-      method: 'GET',
-      url: 'https://api.example.com/users',
-      headers: {
-        'Custom-Header': 'Value with spaces & special chars!@#$%^&*()',
-      },
-    };
+  it('handles undefined headers', () => {
+    const request = { ...mockRequest, headers: undefined };
+    const result = buildRequestRoute(request);
 
-    const route = buildRequestRoute(request);
-
-    expect(route).toBe(
-      '?method=GET&url=base64%3Ahttps%3A%2F%2Fapi.example.com%2Fusers&Custom-Header=Value%2520with%2520spaces%2520%2526%2520special%2520chars%21%2540%2523%2524%2525%255E%2526*%28%29'
-    );
+    expect(result).not.toContain('?');
   });
 });

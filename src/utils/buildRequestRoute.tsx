@@ -1,25 +1,44 @@
 import { RequestModel } from '@/models/request.model';
+import { substituteVariables } from './variableSubstitution';
+import { Variable } from '@/models/variable';
 
-export const buildRequestRoute = (request: RequestModel): string => {
-  const params = new URLSearchParams();
+const safeBtoa = (str: string): string => {
+  if (typeof window === 'undefined') {
+    return '';
+  }
 
-  params.set('method', request.method);
+  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+};
 
-  params.set('url', btoa(request.url));
+export const buildRequestRoute = (
+  request: RequestModel,
+  variables: Variable[] = []
+): string => {
+  const substitutedUrl = substituteVariables(request.url, variables);
+  const encodedUrl = safeBtoa(substitutedUrl);
 
+  let encodedBody = '';
   if (request.body) {
     const bodyString =
       typeof request.body === 'string'
         ? request.body
         : JSON.stringify(request.body);
-    params.set('body', btoa(bodyString));
+    const substitutedBody = substituteVariables(bodyString, variables);
+    encodedBody = `/${safeBtoa(substitutedBody)}`;
   }
 
+  const headerParams = new URLSearchParams();
   if (request.headers) {
     Object.entries(request.headers).forEach(([key, value]) => {
-      params.set(key, encodeURIComponent(value));
+      const substitutedValue = substituteVariables(value, variables);
+      headerParams.append(key, substitutedValue);
     });
   }
 
-  return `?${params.toString()}`;
+  let queryString = headerParams.toString();
+  if (queryString) {
+    queryString = `?${queryString}`;
+  }
+
+  return `/${request.method}/${encodedUrl}${encodedBody}${queryString}`;
 };

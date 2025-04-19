@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef, JSX } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { RestClientState, HttpMethod, Header } from '@/models/rest-client';
 import { useVariables } from '@/components/Variables/useVariables';
 import { useHistory } from '@/components/History/useHistory';
@@ -12,7 +11,8 @@ import HeadersEditor from '../HeadersEditor/HeadersEditor';
 import BodyEditor from '../BodyEditor/BodyEditor';
 import CodeGenerator from '../CodeGenerator/CodeGenerator';
 import styles from './RestClient.module.scss';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+
 const DEFAULT_STATE: RestClientState = {
   method: 'GET',
   url: '',
@@ -26,17 +26,27 @@ const DEFAULT_STATE: RestClientState = {
 
 const safeBtoa = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  return btoa(str);
+  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 };
 
 const safeAtob = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  return atob(str);
+  const padded = str + '='.repeat((4 - (str.length % 4)) % 4);
+  return atob(padded.replace(/-/g, '+').replace(/_/g, '/'));
 };
 
-export default function RestClient(): JSX.Element | null {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+export interface RestClientProps {
+  initialMethod?: string;
+  initialUrl?: string;
+  initialBody?: string;
+  initialHeaders?: Header[];
+}
+
+export default function RestClient({
+  initialMethod,
+  initialUrl,
+  initialBody,
+}: RestClientProps): JSX.Element | null {
   const [state, setState] = useState<RestClientState>(DEFAULT_STATE);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -44,62 +54,67 @@ export default function RestClient(): JSX.Element | null {
   const [variables] = useVariables();
   const { addRequestToHistory } = useHistory();
   const t = useTranslations('RestClient');
+  const locale = useLocale();
+
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   useEffect(() => {
-    if (!isInitialized && isClient) {
-      const method = (searchParams.get('method') as HttpMethod) || 'GET';
-      const urlParam = searchParams.get('url');
-      const bodyParam = searchParams.get('body');
-      const url = urlParam ? safeAtob(urlParam) : '';
-      const body = bodyParam ? safeAtob(bodyParam) : '';
+    if (pendingUrlUpdate.current && isClient) {
+      const newState = pendingUrlUpdate.current;
 
+      const substitutedUrl = substituteVariables(newState.url, variables);
+      const substitutedBody = substituteVariables(newState.body, variables);
+      const substitutedHeaders = newState.headers.map(header => ({
+        ...header,
+        value: substituteVariables(header.value, variables),
+      }));
+
+      const encodedUrl = safeBtoa(substitutedUrl);
+
+      const headerParams = substitutedHeaders.reduce((params, header) => {
+        if (header.key && header.value) {
+          params.append(header.key, header.value);
+        }
+        return params;
+      }, new URLSearchParams());
+
+      const queryString = headerParams.toString();
+      const encodedBody = substitutedBody
+        ? `/${safeBtoa(substitutedBody)}`
+        : '';
+      const newPath = `/${locale}/rest-client/${newState.method}/${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
+
+      window.history.pushState({}, '', newPath);
+      pendingUrlUpdate.current = null;
+    }
+  }, [state, isClient, variables, locale]);
+
+  useEffect(() => {
+    if (!isInitialized && isClient) {
+      const method = (initialMethod as HttpMethod) || 'GET';
+      const url = initialUrl ? safeAtob(initialUrl) : '';
+      const body = initialBody ? safeAtob(initialBody) : '';
+
+      const searchParams = new URLSearchParams(window.location.search);
       const headers: Header[] = [];
       searchParams.forEach((value, key) => {
-        if (key !== 'method' && key !== 'url' && key !== 'body') {
-          headers.push({ key, value: decodeURIComponent(value) });
+        if (key !== 'body') {
+          headers.push({ key, value });
         }
       });
 
-      setState({
+      setState(prev => ({
+        ...prev,
         method,
         url,
         body,
         headers,
-        response: {
-          status: null,
-          body: '',
-        },
-      });
+      }));
       setIsInitialized(true);
     }
-  }, [searchParams, isInitialized, isClient]);
-
-  useEffect(() => {
-    if (pendingUrlUpdate.current && isClient) {
-      const newState = pendingUrlUpdate.current;
-      const params = new URLSearchParams();
-      params.set('method', newState.method);
-      const substitutedUrl = substituteVariables(newState.url, variables);
-      params.set('url', safeBtoa(substitutedUrl));
-
-      if (newState.body) {
-        const substitutedBody = substituteVariables(newState.body, variables);
-        params.set('body', safeBtoa(substitutedBody));
-      }
-
-      newState.headers.forEach(header => {
-        const substitutedValue = substituteVariables(header.value, variables);
-        params.set(header.key, encodeURIComponent(substitutedValue));
-      });
-
-      const newUrl = `/rest-client?${params.toString()}`;
-      router.push(newUrl, { scroll: false });
-      pendingUrlUpdate.current = null;
-    }
-  }, [state, isClient, router, variables]);
+  }, [initialMethod, initialUrl, initialBody, isInitialized, isClient]);
 
   const handleMethodChange = useCallback((method: HttpMethod) => {
     setState(prev => {
@@ -178,12 +193,11 @@ export default function RestClient(): JSX.Element | null {
         },
       }));
     } catch (error) {
-      console.error('Error making request:', error);
       setState(prev => ({
         ...prev,
         response: {
           status: null,
-          body: JSON.stringify({ error: t('response_error_message') }),
+          body: `${t('response_error_message')}: ${error}`,
         },
       }));
     }

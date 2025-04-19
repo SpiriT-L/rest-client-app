@@ -63,8 +63,7 @@ export default function BodyEditor({
       onChange?.(formatted);
       setFormatError(null);
     } catch (error) {
-      console.error(error);
-      setFormatError(t('format_error'));
+      setFormatError(`${t('format_error')}: ${error}`);
     }
   };
 

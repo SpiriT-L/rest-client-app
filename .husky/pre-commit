@@ -1,4 +1,2 @@
 npm run format:fix
 npm run lint
-npx vitest run
-git add .

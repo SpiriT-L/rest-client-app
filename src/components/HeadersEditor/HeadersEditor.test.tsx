@@ -16,17 +16,19 @@ describe('HeadersEditor', () => {
 
   beforeEach(() => {
     mockOnChange.mockClear();
-    useTranslations.mockReturnValue((key: string) => {
-      const translations: Record<string, string> = {
-        header_name: 'Header Name',
-        header_value: 'Header Value',
-        new_header_key: 'New Header Key',
-        new_header_value: 'New Header Value',
-        add_header: 'Add Header',
-        remove_header: 'Remove',
-      };
-      return translations[key] || key;
-    });
+    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
+      (key: string) => {
+        const translations: Record<string, string> = {
+          header_name: 'Header Name',
+          header_value: 'Header Value',
+          new_header_key: 'New Header Key',
+          new_header_value: 'New Header Value',
+          add_header: 'Add Header',
+          remove_header: 'Remove',
+        };
+        return translations[key] || key;
+      }
+    );
   });
 
   it('renders existing headers', () => {

@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { NotFound } from './NotFound';
 import { useTranslations } from 'next-intl';
@@ -31,7 +31,6 @@ describe('NotFound Component', () => {
   it('renders 404 heading, translated heading, and translated paragraph', () => {
     render(<NotFound />);
 
-    // Check static 404 heading
     const heading404 = screen.getByRole('heading', { level: 1, name: '404' });
     expect(heading404).toBeInTheDocument();
 

@@ -9,22 +9,25 @@ interface CodeTemplateParams {
 
 export const codeTemplates = {
   curl: ({ method, url, headers, body }: CodeTemplateParams): string => {
-    const headerLines = headers
-      .map(({ key, value }) => `  -H "${key}: ${value}"`)
-      .join(' \\\n');
-    const bodyLine = body ? ` \\\n  -d '${body}'` : '';
-    return `curl -X ${method} "${url}" \\\n${headerLines}${bodyLine}`;
+    const headerLines =
+      headers.length > 0
+        ? headers.map(({ key, value }) => `-H "${key}: ${value}"`).join(' ')
+        : '';
+    const bodyLine = body ? `-d '${body}'` : '';
+    return `curl -X ${method} "${url}" ${headerLines} ${bodyLine}`
+      .replace(/\s+/g, ' ')
+      .trim();
   },
 
   javascript: ({ method, url, headers, body }: CodeTemplateParams): string => {
-    const headerLines = headers
-      .map(({ key, value }) => `    "${key}": "${value}"`)
-      .join(',\n');
+    const headerLines =
+      headers.length > 0
+        ? `  headers: {
+${headers.map(({ key, value }) => `    "${key}": "${value}"`).join(',\n')}
+  },`
+        : '';
     return `fetch("${url}", {
-  method: "${method}",
-  headers: {
-${headerLines}
-  },
+  method: "${method}"${headerLines ? ',\n' + headerLines : ''},
   body: ${body ? body : 'null'}
 })
   .then(response => response.json())
@@ -33,13 +36,25 @@ ${headerLines}
   },
 
   xhr: ({ method, url, headers, body }: CodeTemplateParams): string => {
-    const headerLines = headers
-      .map(({ key, value }) => `xhr.setRequestHeader("${key}", "${value}");`)
-      .join('\n');
+    function getHeaderLines(
+      headers: Array<{ key: string; value: string }>
+    ): string {
+      if (!headers || headers.length === 0) {
+        return '';
+      }
+      return (
+        headers
+          .map(
+            ({ key, value }) => `xhr.setRequestHeader("${key}", "${value}");`
+          )
+          .join('\n') + '\n'
+      );
+    }
+    const headerLines = getHeaderLines(headers);
+
     return `const xhr = new XMLHttpRequest();
 xhr.open("${method}", "${url}");
-${headerLines}
-xhr.onload = function() {
+${headerLines}xhr.onload = function() {
   if (xhr.status === 200) {
     console.log(JSON.parse(xhr.responseText));
   } else {
@@ -53,16 +68,16 @@ ${body ? `xhr.send(${body});` : 'xhr.send();'}`;
   },
 
   nodejs: ({ method, url, headers, body }: CodeTemplateParams): string => {
-    const headerLines = headers
-      .map(({ key, value }) => `    "${key}": "${value}"`)
-      .join(',\n');
+    const headerLines =
+      headers.length > 0
+        ? `  headers: {
+${headers.map(({ key, value }) => `    "${key}": "${value}"`).join(',\n')}
+  },`
+        : '';
     return `const https = require('https');
 
 const options = {
-  method: '${method}',
-  headers: {
-${headerLines}
-  }
+  method: '${method}'${headerLines ? ',\n' + headerLines : ''}
 };
 
 const req = https.request("${url}", options, (res) => {
@@ -84,26 +99,38 @@ req.end();`;
   },
 
   python: ({ method, url, headers, body }: CodeTemplateParams): string => {
-    const headerLines = headers
-      .map(({ key, value }) => `    "${key}": "${value}"`)
-      .join(',\n');
-    return `import requests
-
-headers = {
-${headerLines}
+    const headerLines =
+      headers.length > 0
+        ? `headers = {
+${headers.map(({ key, value }) => `    "${key}": "${value}"`).join(',\n')}
 }
 
-response = requests.${method.toLowerCase()}("${url}", headers=headers${body ? `, json=${body}` : ''})
+`
+        : '';
+    return `import requests
+
+${headerLines}response = requests.${method.toLowerCase()}("${url}"${headerLines ? ', headers=headers' : ''}${body ? `, json=${body}` : ''})
 print(response.json())`;
   },
 
   java: ({ method, url, headers, body }: CodeTemplateParams): string => {
-    const headerLines = headers
-      .map(
-        ({ key, value }) =>
-          `        requestBuilder.header("${key}", "${value}");`
-      )
-      .join('\n');
+    function getHeaderLines(
+      headers: Array<{ key: string; value: string }>
+    ): string {
+      if (!headers || headers.length === 0) {
+        return '';
+      }
+      return (
+        headers
+          .map(
+            ({ key, value }) =>
+              `    requestBuilder.header("${key}", "${value}");`
+          )
+          .join('\n') + '\n'
+      );
+    }
+    const headerLines = getHeaderLines(headers);
+
     return `import java.net.http.*;
 import java.net.URI;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -117,21 +144,30 @@ public class Main {
       .uri(URI.create("${url}"))
       .method("${method}", ${body ? `BodyPublishers.ofString(${body})` : 'BodyPublishers.noBody()'});
       
-${headerLines}
-    
-    HttpResponse<String> response = client.send(requestBuilder.build(), BodyHandlers.ofString());
+${headerLines}    HttpResponse<String> response = client.send(requestBuilder.build(), BodyHandlers.ofString());
     System.out.println(response.body());
   }
 }`;
   },
 
   csharp: ({ method, url, headers, body }: CodeTemplateParams): string => {
-    const headerLines = headers
-      .map(
-        ({ key, value }) =>
-          `        client.DefaultRequestHeaders.Add("${key}", "${value}");`
-      )
-      .join('\n');
+    function getHeaderLines(
+      headers: Array<{ key: string; value: string }>
+    ): string {
+      if (!headers || headers.length === 0) {
+        return '';
+      }
+      return (
+        headers
+          .map(
+            ({ key, value }) =>
+              `    client.DefaultRequestHeaders.Add("${key}", "${value}");`
+          )
+          .join('\n') + '\n'
+      );
+    }
+    const headerLines = getHeaderLines(headers);
+
     return `using System;
 using System.Net.Http;
 using System.Text;
@@ -140,18 +176,27 @@ using System.Threading.Tasks;
 class Program {
   static async Task Main() {
     using var client = new HttpClient();
-${headerLines}
-    
-    var response = await client.${method.toLowerCase()}Async("${url}"${body ? `, new StringContent(${body}, Encoding.UTF8, "application/json")` : ''});
+${headerLines}    var response = await client.${method.toLowerCase()}Async("${url}"${body ? `, new StringContent(${body}, Encoding.UTF8, "application/json")` : ''});
     Console.WriteLine(await response.Content.ReadAsStringAsync());
   }
 }`;
   },
 
   go: ({ method, url, headers, body }: CodeTemplateParams): string => {
-    const headerLines = headers
-      .map(({ key, value }) => `    req.Header.Add("${key}", "${value}")`)
-      .join('\n');
+    function getHeaderLines(
+      headers: Array<{ key: string; value: string }>
+    ): string {
+      if (!headers || headers.length === 0) {
+        return '';
+      }
+      return (
+        headers
+          .map(({ key, value }) => `  req.Header.Add("${key}", "${value}")`)
+          .join('\n') + '\n'
+      );
+    }
+    const headerLines = getHeaderLines(headers);
+
     return `package main
 
 import (
@@ -165,9 +210,7 @@ func main() {
   client := &http.Client{}
   
   req, _ := http.NewRequest("${method}", "${url}", ${body ? `strings.NewReader(${body})` : 'nil'})
-${headerLines}
-  
-  resp, err := client.Do(req)
+${headerLines}  resp, err := client.Do(req)
   if err != nil {
     fmt.Println(err)
     return

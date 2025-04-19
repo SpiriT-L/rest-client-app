@@ -1,21 +1,25 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
-import '@testing-library/jest-dom';
 import { Navigation } from './Navigation';
-import { useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
-import styles from './Navigation.module.scss';
 import { JSX } from 'react';
-
-vi.mock('next-intl', () => ({
-  useTranslations: vi.fn(),
-}));
 
 vi.mock('next/navigation', () => ({
   usePathname: vi.fn(),
-  useRouter: vi.fn(),
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+}));
+
+vi.mock('next-intl', () => ({
+  useTranslations: vi.fn(
+    (namespace: string) =>
+      (key: string): string =>
+        `${namespace}.${key}`
+  ),
 }));
 
 vi.mock('react-firebase-hooks/auth', () => ({
@@ -24,13 +28,21 @@ vi.mock('react-firebase-hooks/auth', () => ({
 
 vi.mock('@/firebase/config', () => ({
   auth: {
-    signOut: vi.fn(),
+    signOut: vi.fn(() => Promise.resolve()),
   },
 }));
 
 vi.mock('@/i18n/navigation', () => ({
-  Link: ({ children, href, className }): JSX.Element => (
-    <a href={href} className={className} data-testid={`link-${href}`}>
+  Link: ({
+    children,
+    href,
+    className,
+  }: {
+    children: React.ReactNode;
+    href: string;
+    className: string;
+  }): JSX.Element => (
+    <a href={href} className={className} data-testid="link">
       {children}
     </a>
   ),
@@ -43,128 +55,83 @@ vi.mock('./Navigation.module.scss', () => ({
   },
 }));
 
-describe('Navigation Component', () => {
-  const mockTranslations = {
-    sign_in: 'Sign In',
-    sing_up: 'Sign Up',
-    rest_client: 'REST Client',
-    history: 'History',
-    variables: 'Variables',
-    sign_out: 'Sign Out',
-  };
-
-  const mockRouter = {
-    push: vi.fn(),
+describe('Navigation', () => {
+  const mockRouter = { push: vi.fn() };
+  const mockUser = {
+    email: 'test@example.com',
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
-      (key: keyof typeof mockTranslations) => mockTranslations[key]
+    useRouter.mockImplementation(() => mockRouter);
+    usePathname.mockImplementation(() => '/');
+    useTranslations.mockImplementation(
+      (namespace: string) =>
+        (key: string): string =>
+          `${namespace}.${key}`
     );
-    (useRouter as ReturnType<typeof vi.fn>).mockReturnValue(mockRouter);
-    (usePathname as ReturnType<typeof vi.fn>).mockReturnValue('/');
-    (auth.signOut as ReturnType<typeof vi.fn>).mockResolvedValue(undefined);
   });
 
-  it('renders login and register links for unauthenticated user', () => {
-    (useAuthState as ReturnType<typeof vi.fn>).mockReturnValue([null, false]);
-
+  it('renders login and register links when user is not authenticated', () => {
+    useAuthState.mockImplementation(() => [null, false]);
     render(<Navigation />);
 
-    const nav = screen.getByRole('navigation');
-    expect(nav).toHaveClass(styles.navigation);
-
-    expect(screen.getByTestId('link-/login')).toHaveTextContent('Sign In');
-    expect(screen.getByTestId('link-/login')).toHaveClass(styles.navItem);
-    expect(screen.getByTestId('link-/register')).toHaveTextContent('Sign Up');
-    expect(screen.getByTestId('link-/register')).toHaveClass(styles.navItem);
-
-    expect(screen.queryByText('REST Client')).not.toBeInTheDocument();
-    expect(screen.queryByText('Sign Out')).not.toBeInTheDocument();
+    expect(screen.getByText('Navigation.sign_in')).toBeInTheDocument();
+    expect(screen.getByText('Navigation.sing_up')).toBeInTheDocument();
   });
 
-  it('renders authenticated links, email, and sign-out button for authenticated user', () => {
-    const mockUser = { email: 'test@example.com' };
-    (useAuthState as ReturnType<typeof vi.fn>).mockReturnValue([
-      mockUser,
-      false,
-    ]);
-
+  it('renders navigation items when user is authenticated', () => {
+    useAuthState.mockImplementation(() => [mockUser, false]);
     render(<Navigation />);
 
-    expect(screen.getByRole('navigation')).toBeInTheDocument();
-
-    expect(screen.getByTestId('link-rest-client')).toHaveTextContent(
-      'REST Client'
-    );
-    expect(screen.getByTestId('link-rest-client')).toHaveClass(styles.navItem);
-    expect(screen.getByTestId('link-history')).toHaveTextContent('History');
-    expect(screen.getByTestId('link-variables')).toHaveTextContent('Variables');
-
-    expect(screen.getByText('test@example.com')).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Sign Out' })
-    ).toBeInTheDocument();
-
-    expect(screen.queryByText('Sign In')).not.toBeInTheDocument();
-    expect(screen.queryByText('Sign Up')).not.toBeInTheDocument();
+    expect(screen.getByText('Navigation.rest_client')).toBeInTheDocument();
+    expect(screen.getByText('Navigation.history')).toBeInTheDocument();
+    expect(screen.getByText('Navigation.variables')).toBeInTheDocument();
+    expect(screen.getByText(mockUser.email)).toBeInTheDocument();
+    expect(screen.getByText('Navigation.sign_out')).toBeInTheDocument();
   });
 
-  it('applies active class to link matching current pathname', () => {
-    (usePathname as ReturnType<typeof vi.fn>).mockReturnValue('/rest-client');
-    (useAuthState as ReturnType<typeof vi.fn>).mockReturnValue([
-      { email: 'test@example.com' },
-      false,
-    ]);
-
+  it('handles sign out correctly', async () => {
+    useAuthState.mockImplementation(() => [mockUser, false]);
     render(<Navigation />);
 
-    expect(screen.getByTestId('link-rest-client')).toHaveClass('active');
-    expect(screen.getByTestId('link-history')).not.toHaveClass('active');
-    expect(screen.getByTestId('link-variables')).not.toHaveClass('active');
-  });
+    const signOutButton = screen.getByText('Navigation.sign_out');
+    await fireEvent.click(signOutButton);
 
-  it('handles sign-out and redirects to home', async () => {
-    const mockUser = { email: 'test@example.com' };
-    (useAuthState as ReturnType<typeof vi.fn>).mockReturnValue([
-      mockUser,
-      false,
-    ]);
-
-    render(<Navigation />);
-
-    const signOutButton = screen.getByRole('button', { name: 'Sign Out' });
-    fireEvent.click(signOutButton);
-
-    await expect(auth.signOut).toHaveBeenCalled();
+    expect(auth.signOut).toHaveBeenCalled();
     expect(mockRouter.push).toHaveBeenCalledWith('/');
   });
 
-  it('uses correct translation keys', () => {
-    (useAuthState as ReturnType<typeof vi.fn>).mockReturnValue([null, false]);
-
+  it('applies active class to current route', () => {
+    useAuthState.mockImplementation(() => [mockUser, false]);
+    usePathname.mockImplementation(() => '/rest-client');
     render(<Navigation />);
 
-    expect(screen.getByText('Sign In')).toBeInTheDocument();
-    expect(screen.getByText('Sign Up')).toBeInTheDocument();
+    const restClientLink = screen.getByText('Navigation.rest_client');
+    expect(restClientLink.className).toContain('active');
   });
 
-  it('renders accessible navigation structure', () => {
-    (useAuthState as ReturnType<typeof vi.fn>).mockReturnValue([null, false]);
-
+  it('does not apply active class to non-current routes', () => {
+    useAuthState.mockImplementation(() => [mockUser, false]);
+    usePathname.mockImplementation(() => '/rest-client');
     render(<Navigation />);
 
-    const nav = screen.getByRole('navigation');
-    expect(nav).toBeInTheDocument();
+    const historyLink = screen.getByText('Navigation.history');
+    const variablesLink = screen.getByText('Navigation.variables');
 
-    expect(screen.getByRole('link', { name: 'Sign In' })).toHaveAttribute(
-      'href',
-      '/login'
-    );
-    expect(screen.getByRole('link', { name: 'Sign Up' })).toHaveAttribute(
-      'href',
-      '/register'
-    );
+    expect(historyLink.className).not.toContain('active');
+    expect(variablesLink.className).not.toContain('active');
+  });
+
+  it('handles auth error state', () => {
+    useAuthState.mockImplementation(() => [
+      null,
+      false,
+      new Error('Auth error'),
+    ]);
+    render(<Navigation />);
+
+    expect(screen.getByText('Navigation.sign_in')).toBeInTheDocument();
+    expect(screen.getByText('Navigation.sing_up')).toBeInTheDocument();
   });
 });

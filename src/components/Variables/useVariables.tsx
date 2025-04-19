@@ -43,7 +43,7 @@ export const useVariables = (): [
         const parsedVariables = JSON.parse(storedVariables);
         setVariables(parsedVariables);
       } catch (error) {
-        console.error('Error parsing stored variables:', error);
+        alert(`Error parsing stored variables: ${error}`);
         setVariables([]);
       }
     }
