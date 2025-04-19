@@ -10,6 +10,7 @@ import { JSX, useEffect, useState } from 'react';
 import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage(): JSX.Element {
   const t = useTranslations('Login');
@@ -80,6 +81,10 @@ export default function LoginPage(): JSX.Element {
         >
           {t('buttons.login')}
         </Button>
+        <div className={styles.linkContainer}>
+          {t('no_account')}
+          <Link href="/login">{t('sign_up')}</Link>
+        </div>
       </form>
     </div>
   );

@@ -10,6 +10,7 @@ import { JSX, useEffect, useState } from 'react';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function RegisterPage(): JSX.Element {
   const t = useTranslations('Register');
@@ -111,6 +112,10 @@ export default function RegisterPage(): JSX.Element {
         >
           {t('buttons.register')}
         </Button>
+        <div className={styles.linkContainer}>
+          {t('account')}
+          <Link href="/login">{t('sign_in')}</Link>
+        </div>
       </form>
       {userCredential && <p className={styles.success}>{t('success')}</p>}
     </div>

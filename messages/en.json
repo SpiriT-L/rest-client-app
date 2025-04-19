@@ -44,6 +44,8 @@
   },
   "Register": {
     "title": "Register",
+    "account": "Do you already have an account?",
+    "sign_in": "Sign In",
     "success": "Registration successful!",
     "message": "Check your email for confirmation.",
     "placeholders": {
@@ -68,6 +70,9 @@
   },
   "Login": {
     "title": "Login",
+    "no_account": "Don't have an account?",
+    "sing_up": "Sing Up",
+    "sign_up": "Sing Up",
     "placeholders": {
       "email": "Email",
       "password": "Password"

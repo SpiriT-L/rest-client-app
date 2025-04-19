@@ -2,7 +2,6 @@ import { useTranslations } from 'next-intl';
 import { JSX } from 'react';
 import Link from 'next/link';
 import styles from './page.module.scss';
-import Button from '@/components/Button/Button';
 
 export default function HomePage(): JSX.Element {
   const t = useTranslations('HomePage');

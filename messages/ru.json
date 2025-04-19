@@ -16,7 +16,7 @@
   },
   "Header": {
     "sign_in": "Войти",
-    "sing_up": "Зарегистрироваться"
+    "sign_up": "Зарегистрироваться"
   },
   "Footer": {
     "nastya": "Анастасия Менько",
@@ -47,6 +47,8 @@
   },
   "Register": {
     "title": "Регистрация",
+    "account": "У вас уже есть аккаунт?",
+    "sign_in": "Войти",
     "success": "Регистрация прошла успешна!",
     "placeholders": {
       "email": "Email",
@@ -70,6 +72,8 @@
   },
   "Login": {
     "title": "Авторизация",
+    "no_account": "У вас нет аккаунта?",
+    "sign_up": "Sing Up",
     "placeholders": {
       "email": "Email",
       "password": "Пароль"
