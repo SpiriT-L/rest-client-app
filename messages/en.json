@@ -9,7 +9,10 @@
     "history": "View request history and repeat them in one click",
     "language": "Generate code for query execution in different languages",
     "context": "REST Client offers minimalistic interface, flexibility and teamwork capabilities. You can save and share requests and integrate the application with any REST APIs.",
-    "subTitle_3": "Start now!"
+    "subTitle_3": "Start now!",
+    "button_title": "Try REST Client",
+    "docs": "Documentation",
+    "technical_task": "Technical task"
   },
   "Header": {
     "sign_in": "Sign In",

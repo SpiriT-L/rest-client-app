@@ -51,26 +51,22 @@
   margin: 0 0 2rem 0;
   line-height: 1.8;
 }
+.buttonBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.buttonLogin {
-  margin-top: 16px;
-  background-color: red;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 12px 28px;
-  font-size: 1rem;
-  font-weight: 500;
+.button {
+  background-color: transparent;
+  border: 1px solid $color-primary;
   cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover,
-  &:focus {
-    background-color: #125ea2;
-  }
-
-  &:disabled {
-    background-color: #b0b0b0;
-    cursor: not-allowed;
+  color: $color-link;
+  transition: color 0.3s ease;
+  padding: 10px;
+  border-radius: 5px;
+  &:hover {
+    color: $color-link-hover;
+    border-color: $color-link-hover;
   }
 }

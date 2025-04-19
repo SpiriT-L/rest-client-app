@@ -22,16 +22,18 @@ export default function HomePage(): JSX.Element {
           <h2 className={styles.subTitle}>🔹 {t('subTitle_2')}</h2>
           <p className={styles.context}>{t('context')}</p>
           <h2 className={styles.subTitle}>🔹 {t('subTitle_3')}</h2>
-          <Link href="/login">
-            <button>🚀 Попробовать REST Client</button>
-          </Link>
+          <div className={styles.buttonBlock}>
+            <Link href="/login" className={styles.button}>
+              🚀 {t('button_title')}
+            </Link>
+          </div>
           <p style={{ marginTop: '20px' }}>
-            📖 <Link href="/docs">Документация</Link> | 🔗{' '}
+            📖 <Link href="/docs">{t('docs')}</Link> | 🔗{' '}
             <a
               href="https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/tasks/final.md"
               target="_blank"
             >
-              Техническое задание
+              {t('technical_task')}
             </a>
           </p>
         </div>
