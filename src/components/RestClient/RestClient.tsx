@@ -11,7 +11,7 @@ import HeadersEditor from '../HeadersEditor/HeadersEditor';
 import BodyEditor from '../BodyEditor/BodyEditor';
 import CodeGenerator from '../CodeGenerator/CodeGenerator';
 import styles from './RestClient.module.scss';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 const DEFAULT_STATE: RestClientState = {
   method: 'GET',
@@ -54,6 +54,7 @@ export default function RestClient({
   const [variables] = useVariables();
   const { addRequestToHistory } = useHistory();
   const t = useTranslations('RestClient');
+  const locale = useLocale();
 
   useEffect(() => {
     setIsClient(true);
@@ -83,12 +84,12 @@ export default function RestClient({
       const encodedBody = substitutedBody
         ? `/${safeBtoa(substitutedBody)}`
         : '';
-      const newPath = `/rest-client/${newState.method}/${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
+      const newPath = `/${locale}/rest-client/${newState.method}/${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
 
       window.history.pushState({}, '', newPath);
       pendingUrlUpdate.current = null;
     }
-  }, [state, isClient, variables]);
+  }, [state, isClient, variables, locale]);
 
   useEffect(() => {
     if (!isInitialized && isClient) {
