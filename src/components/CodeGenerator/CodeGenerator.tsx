@@ -33,8 +33,7 @@ export default function CodeGenerator({
     try {
       return generateCode(state, variables, selectedLanguage);
     } catch (error) {
-      console.error('Error generating code:', error);
-      return t('error');
+      return `${t('error')}: ${error}`;
     }
   };
 

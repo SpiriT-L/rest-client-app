@@ -193,12 +193,11 @@ export default function RestClient({
         },
       }));
     } catch (error) {
-      console.error('Error making request:', error);
       setState(prev => ({
         ...prev,
         response: {
           status: null,
-          body: JSON.stringify({ error: t('response_error_message') }),
+          body: `${t('response_error_message')}: ${error}`,
         },
       }));
     }
