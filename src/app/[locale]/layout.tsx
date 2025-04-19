@@ -1,7 +1,7 @@
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
-import '@/styles/globals.scss';
+import './styles.css';
 import { JSX } from 'react';
 import Footer from '@/components/Footer/Footer';
 import ErrorBoundary from '@/components/ErrorBoundary/ErrorBoundary';
