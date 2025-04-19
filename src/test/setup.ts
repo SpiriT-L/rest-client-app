@@ -1,11 +1,14 @@
 import '@testing-library/jest-dom';
 import { Router } from 'next/router';
 import { vi } from 'vitest';
+import React, { Attributes } from 'react';
 
 vi.mock('next-intl', () => ({
   useTranslations: () => {
     return (key: string): string => key;
   },
+  useLocale: (): string => 'en',
+  useTimeZone: (): string => 'UTC',
 }));
 
 vi.mock('next/navigation', () => ({
@@ -18,7 +21,25 @@ vi.mock('next/navigation', () => ({
   }),
   useSearchParams: (): URLSearchParams => new URLSearchParams(),
   usePathname: (): string => '/',
+  useParams: (): Record<string, string> => ({}),
 }));
+
+vi.mock('next/image', () => ({
+  __esModule: true,
+  default: (props: Attributes | null): React.ReactNode => {
+    return React.createElement('img', props);
+  },
+}));
+
+const localStorageMock = {
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  clear: vi.fn(),
+  removeItem: vi.fn(),
+  length: 0,
+  key: vi.fn(),
+};
+Object.defineProperty(window, 'localStorage', { value: localStorageMock });
 
 Object.defineProperty(window, 'btoa', {
   value: (str: string) => Buffer.from(str).toString('base64'),
@@ -30,7 +51,13 @@ Object.defineProperty(window, 'atob', {
   writable: true,
 });
 
-global.fetch = vi.fn();
+global.fetch = vi.fn(() =>
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({}),
+    text: () => Promise.resolve(''),
+  } as Response)
+);
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -45,3 +72,15 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 });
+
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
+global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));

@@ -29,7 +29,6 @@ describe('NoPage Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock useTranslations for real NotFound
     (useTranslations as ReturnType<typeof vi.fn>).mockReturnValue(
       (key: keyof typeof mockTranslations) => mockTranslations[key]
     );
@@ -38,7 +37,6 @@ describe('NoPage Component', () => {
   it('renders NotFound component', () => {
     render(<NoPage />);
 
-    // Check mocked NotFound is rendered
     expect(screen.getByTestId('not-found')).toBeInTheDocument();
     expect(screen.getByText('Mocked Not Found')).toBeInTheDocument();
   });

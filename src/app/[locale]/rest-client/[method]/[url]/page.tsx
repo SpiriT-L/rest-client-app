@@ -15,7 +15,6 @@ export default function RestClientPage({
 }): React.JSX.Element {
   const resolvedParams = React.use(params);
 
-  // Decode URL-safe base64 parameter
   const decodedUrl = decodeURIComponent(resolvedParams.url);
 
   const props: RestClientProps = {

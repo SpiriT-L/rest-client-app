@@ -26,13 +26,11 @@ const DEFAULT_STATE: RestClientState = {
 
 const safeBtoa = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  // Convert to base64 and make it URL-safe
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 };
 
 const safeAtob = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  // Add padding if needed and convert from URL-safe base64
   const padded = str + '='.repeat((4 - (str.length % 4)) % 4);
   return atob(padded.replace(/-/g, '+').replace(/_/g, '/'));
 };
@@ -65,7 +63,6 @@ export default function RestClient({
     if (pendingUrlUpdate.current && isClient) {
       const newState = pendingUrlUpdate.current;
 
-      // Substitute variables in URL, body, and headers
       const substitutedUrl = substituteVariables(newState.url, variables);
       const substitutedBody = substituteVariables(newState.body, variables);
       const substitutedHeaders = newState.headers.map(header => ({
@@ -75,7 +72,6 @@ export default function RestClient({
 
       const encodedUrl = safeBtoa(substitutedUrl);
 
-      // Create query parameters for headers with substituted values
       const headerParams = substitutedHeaders.reduce((params, header) => {
         if (header.key && header.value) {
           params.append(header.key, header.value);
@@ -89,7 +85,6 @@ export default function RestClient({
         : '';
       const newPath = `/rest-client/${newState.method}/${encodedUrl}${encodedBody}${queryString ? `?${queryString}` : ''}`;
 
-      // Update URL without page reload
       window.history.pushState({}, '', newPath);
       pendingUrlUpdate.current = null;
     }
@@ -101,11 +96,9 @@ export default function RestClient({
       const url = initialUrl ? safeAtob(initialUrl) : '';
       const body = initialBody ? safeAtob(initialBody) : '';
 
-      // Parse headers from URL query parameters
       const searchParams = new URLSearchParams(window.location.search);
       const headers: Header[] = [];
       searchParams.forEach((value, key) => {
-        // Skip the body parameter if it exists in query params
         if (key !== 'body') {
           headers.push({ key, value });
         }

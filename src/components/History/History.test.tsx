@@ -61,7 +61,6 @@ describe('History Component', () => {
       history: null,
       addRequestToHistory: vi.fn(),
     });
-    // Mock buildRequestRoute
     (buildRequestRoute as ReturnType<typeof vi.fn>).mockImplementation(
       (request: RequestModel) => {
         if (request.method === 'GET') {

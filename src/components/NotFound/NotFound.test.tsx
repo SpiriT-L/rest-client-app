@@ -31,7 +31,6 @@ describe('NotFound Component', () => {
   it('renders 404 heading, translated heading, and translated paragraph', () => {
     render(<NotFound />);
 
-    // Check static 404 heading
     const heading404 = screen.getByRole('heading', { level: 1, name: '404' });
     expect(heading404).toBeInTheDocument();
 

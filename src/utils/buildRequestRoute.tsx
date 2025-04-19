@@ -14,11 +14,9 @@ export const buildRequestRoute = (
   request: RequestModel,
   variables: Variable[] = []
 ): string => {
-  // Substitute variables in URL
   const substitutedUrl = substituteVariables(request.url, variables);
   const encodedUrl = safeBtoa(substitutedUrl);
 
-  // Handle body substitution and encoding
   let encodedBody = '';
   if (request.body) {
     const bodyString =
@@ -29,7 +27,6 @@ export const buildRequestRoute = (
     encodedBody = `/${safeBtoa(substitutedBody)}`;
   }
 
-  // Handle headers
   const headerParams = new URLSearchParams();
   if (request.headers) {
     Object.entries(request.headers).forEach(([key, value]) => {
@@ -38,7 +35,6 @@ export const buildRequestRoute = (
     });
   }
 
-  // Build query string
   let queryString = headerParams.toString();
   if (queryString) {
     queryString = `?${queryString}`;
