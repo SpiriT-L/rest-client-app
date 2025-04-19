@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { guestCheck } from './guestCheck';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
-import React, { JSX } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 
 vi.mock('react-firebase-hooks/auth', () => ({
