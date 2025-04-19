@@ -29,8 +29,6 @@ export default async function LocaleLayout({
   const messages = await import(`../../../messages/${locale}.json`);
 
   return (
-    <html lang={locale}>
-      <body>
         <NextIntlClientProvider locale={locale} messages={messages.default}>
           <ErrorBoundary>
             <Header />
@@ -38,7 +36,5 @@ export default async function LocaleLayout({
             <Footer />
           </ErrorBoundary>
         </NextIntlClientProvider>
-      </body>
-    </html>
   );
 }
