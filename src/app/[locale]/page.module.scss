@@ -1,1 +1,76 @@
 @use '@/styles/variables' as *;
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  min-width: 320px;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: $color-primary;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.description {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: $color-primary;
+  margin: 0 0 2rem 0;
+  text-align: center;
+}
+
+.subTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $color-primary;
+  margin: 0rem 0 2rem 0;
+  text-align: center;
+}
+
+.items {
+  text-align: left;
+  line-height: 1.8;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: $color-primary;
+  margin: 0 0 2rem 0;
+  list-style-type: none;
+}
+
+.context {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: $color-primary;
+  margin: 0 0 2rem 0;
+  line-height: 1.8;
+}
+
+.buttonLogin {
+  margin-top: 16px;
+  background-color: red;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 28px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover,
+  &:focus {
+    background-color: #125ea2;
+  }
+
+  &:disabled {
+    background-color: #b0b0b0;
+    cursor: not-allowed;
+  }
+}
