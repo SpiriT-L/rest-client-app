@@ -11,8 +11,9 @@ import { useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { guestCheck } from '@/hocs/guestCheck';
 
-export default function LoginPage(): JSX.Element {
+const LoginForm: React.FC = () => {
   const t = useTranslations('Login');
   const router = useRouter();
   const [firebaseError, setFirebaseError] = useState<string | undefined>(
@@ -88,4 +89,10 @@ export default function LoginPage(): JSX.Element {
       </form>
     </div>
   );
+};
+
+const GuestLoginForm = guestCheck(LoginForm);
+
+export default function LoginPage(): JSX.Element {
+  return <GuestLoginForm />;
 }

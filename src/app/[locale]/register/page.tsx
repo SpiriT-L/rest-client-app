@@ -11,8 +11,9 @@ import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase/config';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { guestCheck } from '@/hocs/guestCheck';
 
-export default function RegisterPage(): JSX.Element {
+const RegisterForm: React.FC = () => {
   const t = useTranslations('Register');
   const router = useRouter();
   const [emailError, setEmailError] = useState<string | undefined>(undefined);
@@ -120,4 +121,10 @@ export default function RegisterPage(): JSX.Element {
       {userCredential && <p className={styles.success}>{t('success')}</p>}
     </div>
   );
+};
+
+const GuestRegisterForm = guestCheck(RegisterForm);
+
+export default function RegisterPage(): JSX.Element {
+  return <GuestRegisterForm />;
 }

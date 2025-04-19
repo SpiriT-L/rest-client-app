@@ -4,18 +4,12 @@ import '@testing-library/jest-dom';
 import RegisterPage from './page';
 import { useFormik } from 'formik';
 
-vi.mock('firebase/auth', () => ({
-  getAuth: vi.fn(() => ({ currentUser: null })),
-  getApp: vi.fn(() => ({ name: '[DEFAULT]' })),
-  initializeApp: vi.fn(() => ({ name: '[DEFAULT]' })),
-  getApps: vi.fn(() => []),
-}));
-
-vi.mock('next-intl', () => ({
-  useTranslations: vi.fn((): ((key: string) => string) => (key: string) => key),
+vi.mock('@/firebase/config', () => ({
+  auth: {},
 }));
 
 vi.mock('react-firebase-hooks/auth', () => ({
+  useAuthState: vi.fn(() => [null, false]),
   useCreateUserWithEmailAndPassword: vi.fn(() => [vi.fn(), null, false, null]),
 }));
 
@@ -23,6 +17,10 @@ vi.mock('next/navigation', () => ({
   useRouter: vi.fn(() => ({
     push: vi.fn(),
   })),
+}));
+
+vi.mock('next-intl', () => ({
+  useTranslations: vi.fn((): ((key: string) => string) => (key: string) => key),
 }));
 
 const mockFormikValues = {

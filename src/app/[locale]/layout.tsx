@@ -29,16 +29,12 @@ export default async function LocaleLayout({
   const messages = await import(`../../../messages/${locale}.json`);
 
   return (
-    <html lang={locale}>
-      <body>
-        <NextIntlClientProvider locale={locale} messages={messages.default}>
-          <ErrorBoundary>
-            <Header />
-            <main>{children}</main>
-            <Footer />
-          </ErrorBoundary>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider locale={locale} messages={messages.default}>
+      <ErrorBoundary>
+        <Header />
+        <main>{children}</main>
+        <Footer />
+      </ErrorBoundary>
+    </NextIntlClientProvider>
   );
 }
