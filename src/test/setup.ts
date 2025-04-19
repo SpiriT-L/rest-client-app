@@ -1,18 +1,20 @@
 import '@testing-library/jest-dom';
 import { Router } from 'next/router';
 import { vi } from 'vitest';
+
 vi.mock('next-intl', () => ({
-  useTranslations: vi.fn(),
+  useTranslations: () => {
+    return (key: string): string => key;
+  },
 }));
 
 vi.mock('next/navigation', () => ({
-  useRouter: (): Router => ({
+  useRouter: (): Partial<Router> => ({
     push: vi.fn(),
     replace: vi.fn(),
     prefetch: vi.fn(),
     back: vi.fn(),
     forward: vi.fn(),
-    refresh: vi.fn(),
   }),
   useSearchParams: (): URLSearchParams => new URLSearchParams(),
   usePathname: (): string => '/',

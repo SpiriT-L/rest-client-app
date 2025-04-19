@@ -13,7 +13,7 @@ export const useHistory = (): {
       try {
         const sortedHistory = JSON.parse(storedHistory).sort(
           (a: RequestModel, b: RequestModel) => {
-            return b.executionTime - a.executionTime;
+            return (b.executionTime || 0) - (a.executionTime || 0);
           }
         );
         setHistory(sortedHistory);
