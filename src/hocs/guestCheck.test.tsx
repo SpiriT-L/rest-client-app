@@ -7,6 +7,10 @@ import { auth } from '@/firebase/config';
 import React from 'react';
 import { useRouter } from 'next/navigation';
 
+vi.mock('@/firebase/config', () => ({
+  auth: {},
+}));
+
 vi.mock('react-firebase-hooks/auth', () => ({
   useAuthState: vi.fn(),
 }));

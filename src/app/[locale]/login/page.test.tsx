@@ -10,16 +10,19 @@ vi.mock('@/firebase/config', () => ({
   auth: {},
 }));
 
-vi.mock('next-intl', () => ({
-  useTranslations: vi.fn(),
-}));
-
 vi.mock('react-firebase-hooks/auth', () => ({
-  useSignInWithEmailAndPassword: vi.fn(),
+  useAuthState: vi.fn(() => [null, false]),
+  useSignInWithEmailAndPassword: vi.fn(() => [vi.fn(), null, false, null]),
 }));
 
 vi.mock('next/navigation', () => ({
-  useRouter: vi.fn(),
+  useRouter: vi.fn(() => ({
+    push: vi.fn(),
+  })),
+}));
+
+vi.mock('next-intl', () => ({
+  useTranslations: vi.fn((): ((key: string) => string) => (key: string) => key),
 }));
 
 vi.mock('@/utils/validationSchema', () => ({
