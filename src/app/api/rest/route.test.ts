@@ -14,7 +14,7 @@ describe('POST /api/rest', () => {
     const mockResponse = {
       ok: true,
       status: 200,
-      text: () => Promise.resolve('{"success": true}'),
+      text: (): Promise<string> => Promise.resolve('{"success": true}'),
     };
     mockFetch.mockResolvedValue(mockResponse);
 
@@ -47,7 +47,7 @@ describe('POST /api/rest', () => {
     const mockResponse = {
       ok: true,
       status: 200,
-      text: () => Promise.resolve('plain text response'),
+      text: (): Promise<string> => Promise.resolve('plain text response'),
     };
     mockFetch.mockResolvedValue(mockResponse);
 
@@ -80,7 +80,7 @@ describe('POST /api/rest', () => {
     const mockResponse = {
       ok: true,
       status: 200,
-      text: () => Promise.resolve('{}'),
+      text: (): Promise<string> => Promise.resolve('{}'),
     };
     mockFetch.mockResolvedValue(mockResponse);
 
@@ -112,7 +112,7 @@ describe('POST /api/rest', () => {
     const mockResponse = {
       ok: true,
       status: 200,
-      text: () => Promise.resolve('{}'),
+      text: (): Promise<string> => Promise.resolve('{}'),
     };
     mockFetch.mockResolvedValue(mockResponse);
 
@@ -158,4 +158,4 @@ describe('POST /api/rest', () => {
     });
     expect(response.status).toBe(500);
   });
-}); 
+});
