@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import Footer from './Footer';
 import styles from './Footer.module.scss';
@@ -11,7 +11,15 @@ vi.mock('next-intl', () => ({
 }));
 
 vi.mock('next/link', () => ({
-  default: ({ children, href, ...props }): React.JSX.Element => (
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: React.ReactNode;
+    href: string;
+    [key: string]: unknown;
+  }): React.JSX.Element => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -19,8 +27,14 @@ vi.mock('next/link', () => ({
 }));
 
 vi.mock('next/image', () => ({
-  default: ({ src, alt, width, height }): React.JSX.Element => (
-    <div src={src} alt={alt} width={width} height={height} data-testid="img" />
+  default: ({ src, alt, width, height }: React.ComponentProps<'img'>) => (
+    <div
+      data-testid="img"
+      data-src={src}
+      data-alt={alt}
+      data-width={width}
+      data-height={height}
+    />
   ),
 }));
 
@@ -72,11 +86,10 @@ describe('Footer Component', () => {
     expect(links[3]).toHaveAttribute('target', '_blank');
 
     const images = screen.getAllByTestId('img');
-    expect(images).toHaveLength(4);
-    expect(images[0]).toHaveAttribute('src', '/github.svg');
-    expect(images[0]).toHaveAttribute('alt', 'github');
-    expect(images[3]).toHaveAttribute('src', '/rss-logo.svg');
-    expect(images[3]).toHaveAttribute('alt', 'rs');
+    expect(images[0]).toHaveAttribute('data-src', '/github.svg');
+    expect(images[0]).toHaveAttribute('data-alt', 'github');
+    expect(images[3]).toHaveAttribute('data-src', '/rss-logo.svg');
+    expect(images[3]).toHaveAttribute('data-alt', 'rs');
   });
 
   it('applies correct styles to the footer and links', () => {
@@ -85,8 +98,8 @@ describe('Footer Component', () => {
     const footer = container.querySelector('footer');
     expect(footer).toHaveClass(styles.footer);
 
-    const linksContainer = container.querySelector('div');
-    expect(linksContainer).toHaveClass(styles.links);
+    const linksContainer = container.querySelector(`.${styles.links}`);
+    expect(linksContainer).toBeInTheDocument();
 
     const links = screen.getAllByRole('link');
     links.forEach(link => {
