@@ -1,15 +1,18 @@
 @use '@/styles/variables' as *;
 
 .footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 80px;
-  margin-top: 2rem;
-  padding: 2rem 0;
+  .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+    margin-top: 2rem;
+    padding: 2rem;
+  }
 
   .links {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
     list-style: none;
   }
@@ -18,5 +21,12 @@
     display: flex;
     align-items: center;
     gap: 2px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 1rem;
   }
 }
