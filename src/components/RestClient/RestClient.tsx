@@ -21,6 +21,7 @@ const DEFAULT_STATE: RestClientState = {
   response: {
     status: null,
     body: '',
+    ok: '',
   },
 };
 
@@ -195,12 +196,12 @@ export default function RestClient({
         body: substitutedBody || undefined,
         executionTime: Date.now(),
       });
-
       setState(prev => ({
         ...prev,
         response: {
           status,
           body: responseBody,
+          ok: response.ok ? 'OK' : '',
         },
       }));
     } catch (error) {
@@ -208,6 +209,7 @@ export default function RestClient({
         ...prev,
         response: {
           status: null,
+          ok: '',
           body: `${t('response_error_message')}: ${error}`,
         },
       }));
@@ -249,7 +251,9 @@ export default function RestClient({
         {state.response.status !== null && (
           <div className={styles.status}>
             {t('response_status')}:{' '}
-            <span className={styles.statusCode}>{state.response.status}</span>
+            <span className={styles.statusCode}>
+              {state.response.status} {state.response.ok}
+            </span>
           </div>
         )}
         <BodyEditor
