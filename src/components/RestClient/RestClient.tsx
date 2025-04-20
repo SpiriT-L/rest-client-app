@@ -157,19 +157,30 @@ export default function RestClient({
       }));
       const substitutedBody = substituteVariables(state.body, variables);
 
-      const response = await fetch(substitutedUrl, {
-        method: state.method,
-        headers: substitutedHeaders.reduce(
-          (acc, { key, value }) => {
-            acc[key] = value;
-            return acc;
-          },
-          {} as Record<string, string>
-        ),
-        body: substitutedBody ? substitutedBody : undefined,
+      const response = await fetch('/api/rest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: substitutedUrl,
+          method: state.method,
+          headers: substitutedHeaders.reduce(
+            (acc, { key, value }) => {
+              acc[key] = value;
+              return acc;
+            },
+            {} as Record<string, string>
+          ),
+          body: substitutedBody || undefined,
+        }),
       });
 
-      const responseBody = await response.text();
+      if (!response.ok) {
+        throw new Error('Failed to make request');
+      }
+
+      const { status, body: responseBody } = await response.json();
 
       addRequestToHistory({
         url: substitutedUrl,
@@ -188,7 +199,7 @@ export default function RestClient({
       setState(prev => ({
         ...prev,
         response: {
-          status: response.status,
+          status,
           body: responseBody,
         },
       }));
