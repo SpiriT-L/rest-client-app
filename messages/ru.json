@@ -127,6 +127,7 @@
     "response_time": "Время ответа",
     "response_error": "Ошибка ответа",
     "response_error_message": "Не удалось отправить запрос",
+    "response_default_error_message": "Что-то пошло не так",
     "request_body": "Тело запроса"
   },
   "UrlInput": {

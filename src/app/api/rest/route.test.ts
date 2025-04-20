@@ -154,7 +154,7 @@ describe('POST /api/rest', () => {
     const data = await response.json();
 
     expect(data).toEqual({
-      error: 'Failed to make request: Error: Network error',
+      error: 'Error: Network error',
     });
     expect(response.status).toBe(500);
   });
