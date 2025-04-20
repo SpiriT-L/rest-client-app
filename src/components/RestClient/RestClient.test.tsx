@@ -52,8 +52,12 @@ describe('RestClient', () => {
 
   it('adds request to history after successful submission', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
-      status: 200,
-      text: () => Promise.resolve('{"success": true}'),
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          status: 200,
+          body: '{"success": true}',
+        }),
     });
     global.fetch = mockFetch;
 
@@ -68,6 +72,7 @@ describe('RestClient', () => {
     fireEvent.click(submitButton);
 
     await waitFor(() => {
+      expect(mockFetch).toHaveBeenCalledWith('/api/rest', expect.any(Object));
       expect(mockAddToHistory).toHaveBeenCalledWith(
         expect.objectContaining({
           method: 'GET',
@@ -79,7 +84,13 @@ describe('RestClient', () => {
   });
 
   it('handles request errors gracefully', async () => {
-    const mockFetch = vi.fn().mockRejectedValue(new Error('Network error'));
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      json: () =>
+        Promise.resolve({
+          error: 'Failed to make request: Network error',
+        }),
+    });
     global.fetch = mockFetch;
 
     render(
