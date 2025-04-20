@@ -19,6 +19,8 @@ export default defineConfig({
         'src/utils/__mocks__/*',
         'src/firebase/*',
         'src/test/*',
+        'src/i18n*',
+        'src/middleware.ts',
       ],
     },
     setupFiles: ['./src/test/setup.ts'],
