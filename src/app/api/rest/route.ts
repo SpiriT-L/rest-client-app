@@ -18,9 +18,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       body: responseBody,
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: `Failed to make request: ${error}` },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: `${error}` }, { status: 500 });
   }
 }
