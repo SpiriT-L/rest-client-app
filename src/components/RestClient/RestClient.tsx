@@ -27,13 +27,27 @@ const DEFAULT_STATE: RestClientState = {
 
 const safeBtoa = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  try {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+      return String.fromCharCode(parseInt(p1, 16));
+    })).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  } catch (e) {
+    console.error('Error encoding string:', e);
+    return '';
+  }
 };
 
 const safeAtob = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  const padded = str + '='.repeat((4 - (str.length % 4)) % 4);
-  return atob(padded.replace(/-/g, '+').replace(/_/g, '/'));
+  try {
+    const padded = str + '='.repeat((4 - (str.length % 4)) % 4);
+    return decodeURIComponent(atob(padded.replace(/-/g, '+').replace(/_/g, '/')).split('').map(c => {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+  } catch (e) {
+    console.error('Error decoding string:', e);
+    return '';
+  }
 };
 
 export interface RestClientProps {
