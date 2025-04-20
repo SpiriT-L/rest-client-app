@@ -20,6 +20,7 @@ export interface RestClientState {
   response: {
     status: number | null;
     body: string;
+    ok: string;
   };
 }
 
