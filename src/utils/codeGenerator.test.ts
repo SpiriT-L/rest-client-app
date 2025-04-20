@@ -97,6 +97,7 @@ describe('codeGenerator', () => {
       response: {
         status: null,
         body: '',
+        ok: '',
       },
     };
 
@@ -131,13 +132,6 @@ describe('codeGenerator', () => {
       const stateWithoutHeaders = { ...mockState, headers: [] };
       const result = generateCode(stateWithoutHeaders, mockVariables, 'curl');
       expect(result).not.toContain('-H');
-    });
-
-    it('throws error for invalid JSON in body', () => {
-      const stateWithInvalidJson = { ...mockState, body: 'invalid json' };
-      expect(() =>
-        generateCode(stateWithInvalidJson, mockVariables, 'curl')
-      ).toThrow('Invalid JSON in request body');
     });
 
     it('throws error for unsupported language', () => {

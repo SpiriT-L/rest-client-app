@@ -30,11 +30,7 @@ export default function CodeGenerator({
   const t = useTranslations('CodeGenerator');
 
   const getGeneratedCode = (): string => {
-    try {
-      return generateCode(state, variables, selectedLanguage);
-    } catch (error) {
-      return `${t('error')}: ${error}`;
-    }
+    return generateCode(state, variables, selectedLanguage);
   };
 
   return (

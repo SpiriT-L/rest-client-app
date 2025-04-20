@@ -27,13 +27,37 @@ const DEFAULT_STATE: RestClientState = {
 
 const safeBtoa = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  try {
+    return btoa(
+      encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
+        return String.fromCharCode(parseInt(p1, 16));
+      })
+    )
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+  } catch (e) {
+    console.error('Error encoding string:', e);
+    return '';
+  }
 };
 
 const safeAtob = (str: string): string => {
   if (typeof window === 'undefined') return '';
-  const padded = str + '='.repeat((4 - (str.length % 4)) % 4);
-  return atob(padded.replace(/-/g, '+').replace(/_/g, '/'));
+  try {
+    const padded = str + '='.repeat((4 - (str.length % 4)) % 4);
+    return decodeURIComponent(
+      atob(padded.replace(/-/g, '+').replace(/_/g, '/'))
+        .split('')
+        .map(c => {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join('')
+    );
+  } catch (e) {
+    console.error('Error decoding string:', e);
+    return '';
+  }
 };
 
 export interface RestClientProps {
@@ -68,7 +92,7 @@ export default function RestClient({
       const substitutedUrl = substituteVariables(newState.url, variables);
       const substitutedBody = substituteVariables(newState.body, variables);
       const substitutedHeaders = newState.headers.map(header => ({
-        ...header,
+        key: substituteVariables(header.key, variables),
         value: substituteVariables(header.value, variables),
       }));
 
@@ -153,25 +177,39 @@ export default function RestClient({
     try {
       const substitutedUrl = substituteVariables(state.url, variables);
       const substitutedHeaders = state.headers.map(header => ({
-        ...header,
+        key: substituteVariables(header.key, variables),
         value: substituteVariables(header.value, variables),
       }));
       const substitutedBody = substituteVariables(state.body, variables);
 
-      const response = await fetch(substitutedUrl, {
-        method: state.method,
-        headers: substitutedHeaders.reduce(
-          (acc, { key, value }) => {
-            acc[key] = value;
-            return acc;
-          },
-          {} as Record<string, string>
-        ),
-        body: substitutedBody ? substitutedBody : undefined,
+      const response = await fetch('/api/rest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          url: substitutedUrl,
+          method: state.method,
+          headers: substitutedHeaders.reduce(
+            (acc, { key, value }) => {
+              acc[key] = value;
+              return acc;
+            },
+            {} as Record<string, string>
+          ),
+          body: substitutedBody || undefined,
+        }),
       });
 
-      const responseBody = await response.text();
+      if (!response.ok) {
+        throw new Error('Failed to make request');
+      }
 
+      const {
+        status,
+        body: responseBody,
+        ok: responseOk,
+      } = await response.json();
       addRequestToHistory({
         url: substitutedUrl,
         method: state.method,
@@ -182,15 +220,16 @@ export default function RestClient({
           },
           {} as Record<string, string>
         ),
-        body: substitutedBody ? JSON.parse(substitutedBody) : undefined,
+        body: substitutedBody || undefined,
         executionTime: Date.now(),
       });
+
       setState(prev => ({
         ...prev,
         response: {
-          status: response.status,
+          status,
           body: responseBody,
-          ok: response.ok ? 'OK' : '',
+          ok: responseOk === true ? 'OK' : '❌',
         },
       }));
     } catch (error) {
