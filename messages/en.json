@@ -59,13 +59,17 @@
     },
     "validation": {
       "email": "Enter a valid email",
+      "emailInvalid": "Invalid email format",
       "requiredEmail": "Email is required",
-      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMinLength": "Password must be at least 8 characters",
       "requiredPassword": "Password is required",
       "passwordsMustMatch": "Passwords must match",
       "requiredRepeatPassword": "Please repeat your password",
       "acceptTerms": "You must accept the terms",
-      "requiredAcceptTerms": "Accepting the terms is required"
+      "requiredAcceptTerms": "Accepting the terms is required",
+      "passwordLetter": "Should contain at least one latin letter",
+      "passwordDigit": "Should contain at least one digit",
+      "passwordSpecial": "Should contain at least one special character"
     }
   },
   "Login": {
@@ -83,7 +87,7 @@
     "validation": {
       "email": "Enter a valid email",
       "requiredEmail": "Email is required",
-      "passwordMinLength": "Password must be at least 6 characters",
+      "passwordMinLength": "Password must be at least 8 characters",
       "requiredPassword": "Password is required"
     }
   },
