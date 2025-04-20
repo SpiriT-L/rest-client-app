@@ -205,7 +205,7 @@ export default function RestClient({
         response: {
           status,
           body: responseBody,
-          ok: responseOk === 'true' ? 'OK' : '❌',
+          ok: responseOk === true ? 'OK' : '❌',
         },
       }));
     } catch (error) {
