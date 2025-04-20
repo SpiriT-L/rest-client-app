@@ -10,7 +10,6 @@
     "language": "Generate code for query execution in different languages",
     "context": "REST Client offers minimalistic interface, flexibility and teamwork capabilities. You can save and share requests and integrate the application with any REST APIs.",
     "subTitle_3": "Start now!",
-    "button_title": "Try REST Client",
     "docs": "Documentation",
     "technical_task": "Technical task"
   },
@@ -134,5 +133,10 @@
   "NotFound": {
     "not_found": "Page not found",
     "not_exist": "Sorry, the page you are looking for does not exist."
+  },
+  "UserActions": {
+    "button_rest-client": "Try REST Client",
+    "button_sign_in": "Sign In",
+    "button_sign_up": "Sign Up"
   }
 }
