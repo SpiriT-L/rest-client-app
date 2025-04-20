@@ -125,6 +125,7 @@
     "response_time": "Response time",
     "response_error": "Response error",
     "response_error_message": "Failed to make request",
+    "response_default_error_message": "Something went wrong",
     "request_body": "Request body"
   },
   "UrlInput": {

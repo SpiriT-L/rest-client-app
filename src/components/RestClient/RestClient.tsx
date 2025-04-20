@@ -201,15 +201,19 @@ export default function RestClient({
         }),
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to make request');
-      }
-
       const {
         status,
         body: responseBody,
         ok: responseOk,
+        error: responseError,
       } = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          `${t('response_error_message')}: ${responseError || t('response_default_error_message')}`
+        );
+      }
+
       addRequestToHistory({
         url: substitutedUrl,
         method: state.method,
@@ -238,7 +242,7 @@ export default function RestClient({
         response: {
           status: null,
           ok: '',
-          body: `${t('response_error_message')}: ${error}`,
+          body: `${error}`,
         },
       }));
     }
