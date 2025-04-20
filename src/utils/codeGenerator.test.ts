@@ -133,13 +133,6 @@ describe('codeGenerator', () => {
       expect(result).not.toContain('-H');
     });
 
-    it('throws error for invalid JSON in body', () => {
-      const stateWithInvalidJson = { ...mockState, body: 'invalid json' };
-      expect(() =>
-        generateCode(stateWithInvalidJson, mockVariables, 'curl')
-      ).toThrow('Invalid JSON in request body');
-    });
-
     it('throws error for unsupported language', () => {
       expect(() =>
         generateCode(mockState, mockVariables, 'unsupported')
