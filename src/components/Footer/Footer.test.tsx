@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import Footer from './Footer';
 import styles from './Footer.module.scss';
@@ -85,8 +85,8 @@ describe('Footer Component', () => {
     const footer = container.querySelector('footer');
     expect(footer).toHaveClass(styles.footer);
 
-    const linksContainer = container.querySelector('div');
-    expect(linksContainer).toHaveClass(styles.links);
+    const linksContainer = container.querySelector(`.${styles.links}`);
+    expect(linksContainer).toBeInTheDocument();
 
     const links = screen.getAllByRole('link');
     links.forEach(link => {
