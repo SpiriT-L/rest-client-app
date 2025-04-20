@@ -84,7 +84,7 @@ const LoginForm: React.FC = () => {
         </Button>
         <div className={styles.linkContainer}>
           {t('no_account')}
-          <Link href="/login">{t('sign_up')}</Link>
+          <Link href="/register">{t('sign_up')}</Link>
         </div>
       </form>
     </div>

@@ -2,6 +2,7 @@ import { useTranslations } from 'next-intl';
 import { JSX } from 'react';
 import Link from 'next/link';
 import styles from './page.module.scss';
+import UserActions from '@/components/UserActions/UserActions';
 
 export default function HomePage(): JSX.Element {
   const t = useTranslations('HomePage');
@@ -22,9 +23,10 @@ export default function HomePage(): JSX.Element {
           <p className={styles.context}>{t('context')}</p>
           <h2 className={styles.subTitle}>🔹 {t('subTitle_3')}</h2>
           <div className={styles.buttonBlock}>
-            <Link href="/login" className={styles.button}>
+            {/* <Link href="/login" className={styles.button}>
               🚀 {t('button_title')}
-            </Link>
+            </Link> */}
+            <UserActions />
           </div>
           <p style={{ marginTop: '20px' }}>
             📖 <Link href="/docs">{t('docs')}</Link> | 🔗{' '}
