@@ -54,7 +54,7 @@ export const generateCode = (
 
   const substitutedUrl = substituteVariables(url, variables);
   const substitutedHeaders = headers.map(header => ({
-    ...header,
+    key: substituteVariables(header.key, variables),
     value: substituteVariables(header.value, variables),
   }));
   const substitutedBody = body ? substituteVariables(body, variables) : '';

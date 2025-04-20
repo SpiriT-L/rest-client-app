@@ -67,7 +67,7 @@ export default function RestClient({
       const substitutedUrl = substituteVariables(newState.url, variables);
       const substitutedBody = substituteVariables(newState.body, variables);
       const substitutedHeaders = newState.headers.map(header => ({
-        ...header,
+        key: substituteVariables(header.key, variables),
         value: substituteVariables(header.value, variables),
       }));
 
@@ -152,7 +152,7 @@ export default function RestClient({
     try {
       const substitutedUrl = substituteVariables(state.url, variables);
       const substitutedHeaders = state.headers.map(header => ({
-        ...header,
+        key: substituteVariables(header.key, variables),
         value: substituteVariables(header.value, variables),
       }));
       const substitutedBody = substituteVariables(state.body, variables);
