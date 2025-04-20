@@ -240,7 +240,9 @@ export default function RestClient({
         {state.response.status !== null && (
           <div className={styles.status}>
             {t('response_status')}:{' '}
-            <span className={styles.statusCode}>{state.response.status} {state.response.ok}</span>
+            <span className={styles.statusCode}>
+              {state.response.status} {state.response.ok}
+            </span>
           </div>
         )}
         <BodyEditor

@@ -11,10 +11,20 @@ export const getValidationSchema = (
   Yup.object({
     email: Yup.string()
       .email(t('validation.email'))
-      .required(t('validation.requiredEmail')),
+      .required(t('validation.requiredEmail'))
+      .matches(
+        RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'),
+        'validation.emailInvalid'
+      ),
     password: Yup.string()
-      .min(6, t('validation.passwordMinLength'))
-      .required(t('validation.requiredPassword')),
+      .min(8, t('validation.passwordMinLength'))
+      .required(t('validation.requiredPassword'))
+      .matches(/\p{L}/u, t('validation.passwordLetter'))
+      .matches(/\d/, t('validation.passwordDigit'))
+      .matches(
+        /[!@#$%^&*(),.?":{}|<>[\];'~`\-_/\\=+\s]/,
+        t('validation.passwordSpecial')
+      ),
     repeatPassword: Yup.string()
       .oneOf([Yup.ref('password')], t('validation.passwordsMustMatch'))
       .required(t('validation.requiredRepeatPassword')),
@@ -34,6 +44,6 @@ export const getLoginValidationSchema = (
       .email(t('validation.email'))
       .required(t('validation.requiredEmail')),
     password: Yup.string()
-      .min(6, t('validation.passwordMinLength'))
+      .min(8, t('validation.passwordMinLength'))
       .required(t('validation.requiredPassword')),
   });

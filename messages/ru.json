@@ -61,13 +61,17 @@
     },
     "validation": {
       "email": "Введите действительный адрес электронной почты",
+      "emailInvalid": "Некорректный формат электронной почты",
       "requiredEmail": "Email обязателен",
-      "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+      "passwordMinLength": "Пароль должен содержать не менее 8 символов",
       "requiredPassword": "Пароль обязателен",
       "passwordsMustMatch": "Пароли должны совпадать",
       "requiredRepeatPassword": "Пожалуйста, повторите свой пароль",
       "acceptTerms": "Вы должны принять условия",
-      "requiredAcceptTerms": "Принятие условий обязательно"
+      "requiredAcceptTerms": "Принятие условий обязательно",
+      "passwordLetter": "Должен содержать хотя бы одну латинскую букву",
+      "passwordDigit": "Должен содержать хотя бы одну цифру",
+      "passwordSpecial": "Должен содержать хотя бы один спецсимвол"
     }
   },
   "Login": {
@@ -84,7 +88,7 @@
     "validation": {
       "email": "Введите действительный адрес электронной почты",
       "requiredEmail": "Email обязателен",
-      "passwordMinLength": "Пароль должен содержать не менее 6 символов",
+      "passwordMinLength": "Пароль должен содержать не менее 8 символов",
       "requiredPassword": "Пароль обязателен"
     }
   },
