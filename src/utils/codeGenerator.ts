@@ -36,7 +36,8 @@ export const prepareBodyForLanguage = (
 ): string => {
   if (!body) return '';
 
-  const formattedBody = formatJson(body);
+  const isJson = validateJson(body);
+  const formattedBody = isJson ? formatJson(body) : body;
 
   if (language === 'curl') {
     return formattedBody;
@@ -58,10 +59,6 @@ export const generateCode = (
     value: substituteVariables(header.value, variables),
   }));
   const substitutedBody = body ? substituteVariables(body, variables) : '';
-
-  if (substitutedBody && !validateJson(substitutedBody)) {
-    throw new Error('Invalid JSON in request body');
-  }
 
   const escapedUrl = escapeString(substitutedUrl);
   const escapedHeaders = substitutedHeaders.map(header => ({

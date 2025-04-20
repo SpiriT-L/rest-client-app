@@ -192,7 +192,7 @@ export default function RestClient({
           },
           {} as Record<string, string>
         ),
-        body: substitutedBody ? JSON.parse(substitutedBody) : undefined,
+        body: substitutedBody || undefined,
         executionTime: Date.now(),
       });
 

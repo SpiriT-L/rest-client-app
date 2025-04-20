@@ -18,7 +18,6 @@ export default function BodyEditor({
   title = 'Request Body',
 }: BodyEditorProps): JSX.Element {
   const [localValue, setLocalValue] = useState(value);
-  const [formatError, setFormatError] = useState<string | null>(null);
   const [isJson, setIsJson] = useState(false);
   const t = useTranslations('BodyEditor');
 
@@ -46,10 +45,8 @@ export default function BodyEditor({
     try {
       JSON.parse(newValue);
       setIsJson(true);
-      setFormatError(null);
     } catch {
       setIsJson(false);
-      setFormatError(null);
     }
   };
 
@@ -61,10 +58,7 @@ export default function BodyEditor({
       const formatted = JSON.stringify(parsed, null, 2);
       setLocalValue(formatted);
       onChange?.(formatted);
-      setFormatError(null);
-    } catch (error) {
-      setFormatError(`${t('format_error')}: ${error}`);
-    }
+    } catch {}
   };
 
   return (
@@ -86,7 +80,6 @@ export default function BodyEditor({
           readOnly ? t('format_placeholder_view') : t('format_placeholder_edit')
         }
       />
-      {formatError && <div className={styles.error}>{formatError}</div>}
     </div>
   );
 }
