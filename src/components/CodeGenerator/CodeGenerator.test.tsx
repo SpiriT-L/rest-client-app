@@ -23,6 +23,7 @@ describe('CodeGenerator', () => {
     response: {
       status: null,
       body: '',
+      ok: '',
     },
   };
 

@@ -14,6 +14,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({
       status: response.status,
+      ok: response.ok,
       body: responseBody,
     });
   } catch (error) {

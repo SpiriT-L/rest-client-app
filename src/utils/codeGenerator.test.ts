@@ -97,6 +97,7 @@ describe('codeGenerator', () => {
       response: {
         status: null,
         body: '',
+        ok: '',
       },
     };
 

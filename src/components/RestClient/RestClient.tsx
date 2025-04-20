@@ -181,8 +181,7 @@ export default function RestClient({
         throw new Error('Failed to make request');
       }
 
-      const { status, body: responseBody } = await response.json();
-
+      const { status, body: responseBody, ok: responseOk } = await response.json();
       addRequestToHistory({
         url: substitutedUrl,
         method: state.method,
@@ -196,12 +195,13 @@ export default function RestClient({
         body: substitutedBody || undefined,
         executionTime: Date.now(),
       });
+    
       setState(prev => ({
         ...prev,
         response: {
           status,
           body: responseBody,
-          ok: response.ok ? 'OK' : '',
+          ok: responseOk === 'true' ? 'OK' : '❌',
         },
       }));
     } catch (error) {
